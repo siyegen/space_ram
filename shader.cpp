@@ -23,7 +23,7 @@ void Shader::Compile(const GLchar* vertexSource, const GLchar* fragmentSource, c
 	checkCompileErrors(sFragment, GLCOMPILETYPE::FRAGMENT);
 
 	// If geometry shader source code is given, also compile geometry shader
-	if (geometrySource != nullptr) {
+	if (geometrySource) {
 		gShader = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(gShader, 1, &geometrySource, NULL);
 		glCompileShader(gShader);

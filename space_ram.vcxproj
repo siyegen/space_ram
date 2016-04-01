@@ -126,6 +126,15 @@
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\diffuse_only.frag" />
+    <None Include="shaders\lamp.frag" />
+    <None Include="shaders\lamp.vs" />
+    <None Include="shaders\outline.frag" />
+    <None Include="shaders\outline.gs" />
+    <None Include="shaders\outline.vs" />
+    <None Include="shaders\simple3d.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

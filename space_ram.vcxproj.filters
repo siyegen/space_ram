@@ -39,4 +39,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\lamp.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\lamp.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\outline.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\outline.gs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\outline.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\simple3d.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\diffuse_only.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

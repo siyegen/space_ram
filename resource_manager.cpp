@@ -5,8 +5,7 @@
 #include <fstream>
 
 std::map<std::string, Shader> ResourceManager::Shaders;
-
-Shader ResourceManager::LoadShader(const GLchar *vShaderFile, const GLchar *fShaderFile, const GLchar *gShaderFile, std::string name) {
+Shader ResourceManager::LoadShader(std::string name, const GLchar *vShaderFile, const GLchar *fShaderFile, const GLchar *gShaderFile) {
 	Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
 	return Shaders[name];
 }
@@ -22,34 +21,34 @@ void ResourceManager::Clear() {
 }
 
 Shader ResourceManager::loadShaderFromFile(const GLchar* vShaderFile, const GLchar* fShaderFile, const GLchar* gShaderFile) {
-	const GLchar *vShaderCode = nullptr;
-	const GLchar *fShaderCode = nullptr;
-	const GLchar *gShaderCode = nullptr;
-
+	std::string vertexCode, fragmentCode, geometryCode;
 	try {
-		vShaderCode = readFromFile(vShaderFile);
-		fShaderCode = readFromFile(fShaderFile);
+		vertexCode = readFromFile(vShaderFile);
+		fragmentCode = readFromFile(fShaderFile);
 		// Skip geometry shader if no file is given
 		if (gShaderFile) {
-			gShaderCode = readFromFile(gShaderFile);
+			geometryCode = readFromFile(gShaderFile);
 		}
 	} catch (std::exception e) {
 		std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
 	}
+	const GLchar *vShaderCode = vertexCode.c_str();
+	const GLchar *fShaderCode = fragmentCode.c_str();
+	const GLchar *gShaderCode = nullptr;
+	if (gShaderFile) gShaderCode = geometryCode.c_str();
 
 	Shader shader;
 	shader.Compile(vShaderCode, fShaderCode, gShaderCode);
-	delete vShaderCode, fShaderCode, gShaderCode;
 	return shader;
 }
 
-GLchar* ResourceManager::readFromFile(const GLchar *sFile) {
-	std::string shaderCode;
+std::string ResourceManager::readFromFile(const GLchar *sFile) {
+	std::ifstream shaderFile;
 	std::stringstream shaderStream;
-	std::ifstream shaderFile(sFile);
+	shaderFile.exceptions(std::ifstream::badbit | std::ifstream::failbit);
 
+	shaderFile.open(sFile);
 	shaderStream << shaderFile.rdbuf();
 	shaderFile.close();
-
-	return (GLchar*)shaderStream.str().c_str();
+	return shaderStream.str();
 }

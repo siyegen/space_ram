@@ -1,6 +1,9 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "game.h"
 #include "resource_manager.h"
@@ -44,13 +47,79 @@ int main(int argc, char *argv[]) {
 	// Initialize game
 	SpaceRam.Init();
 
-	// DeltaTime variables
-	GLfloat deltaTime = 0.0f;
-	GLfloat lastFrame = 0.0f;
+	// Test cube
+	GLfloat vertices[] = {
+		 // Position			//Normal
+		-0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
+
+		-0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
+	};
+	
+	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
+
+	//GLuint VBO, testCubeVAO;
+	//glGenVertexArrays(1, &testCubeVAO);
+	//glGenBuffers(1, &VBO);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	//glBindVertexArray(testCubeVAO);
+	//// Position attribute
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	//glEnableVertexAttribArray(0);
+	//// Normal attribute
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	//glEnableVertexAttribArray(1);
+	//glBindVertexArray(0); // Unbind VAO
+
+	//// Test Camera Setup
+	//glm::mat4 projection = glm::perspective(45.0f, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
 
+	// DeltaTime variables
+	GLfloat deltaTime = 0.0f;
+	GLfloat lastFrame = 0.0f;
 	while (!glfwWindowShouldClose(window)) {
 		// Calculate delta time
 		GLfloat currentFrame = glfwGetTime();
@@ -82,12 +151,15 @@ int main(int argc, char *argv[]) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	// When a user presses the escape key, we set the WindowShouldClose property to true, closing the application
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
 	if (key >= 0 && key < 1024) {
-		if (action == GLFW_PRESS)
+		if (action == GLFW_PRESS) {
 			SpaceRam.Keys[key] = GL_TRUE;
-		else if (action == GLFW_RELEASE)
+		}
+		else if (action == GLFW_RELEASE) {
 			SpaceRam.Keys[key] = GL_FALSE;
+		}
 	}
 }

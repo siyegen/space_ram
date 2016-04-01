@@ -18,7 +18,7 @@ public:
 	static std::map<std::string, Shader> Shaders;
 
 	// Loads (and generates) a shader program from file loading vertex, fragment (and geometry) shader's source code. If gShaderFile is not nullptr, it also loads a geometry shader
-	static Shader LoadShader(const GLchar* vShaderFile, const GLchar* fShaderFile, const GLchar* gShaderFile, std::string name);
+	static Shader LoadShader(std::string name, const GLchar* vShaderFile, const GLchar* fShaderFile, const GLchar* gShaderFile=nullptr);
 
 	// Retrieves a stored sader
 	static Shader GetShader(std::string name);
@@ -32,7 +32,7 @@ private:
 
 	// Loads and generates a shader from file
 	static Shader loadShaderFromFile(const GLchar* vShaderFile, const GLchar* fShaderFile, const GLchar* gShaderFile = nullptr);
-	static GLchar* readFromFile(const GLchar* shaderFile);
+	static std::string readFromFile(const GLchar* shaderFile);
 };
 
 #endif
