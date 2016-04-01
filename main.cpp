@@ -10,6 +10,8 @@
 #include "resource_manager.h"
 #include "renderer.h"
 
+#include <iostream>
+
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -27,7 +29,7 @@ int main(int argc, char *argv[]) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 8);
 
 	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "SpaceRam", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
@@ -98,7 +100,11 @@ int main(int argc, char *argv[]) {
 		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
 	};
 
-	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/lamp.frag");
+	glm::vec3 cubeColor(0.31f, 1.0f, 0.31f);
+	glm::vec3 lightColor(0.8f, 0.5f, 1.0f);
+	glm::vec3 lightPos(1.2f, 15.0f, 2.0f);
+
+	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
 
 	Renderer cubeRenderer(testCube, vertices);
@@ -133,6 +139,16 @@ int main(int argc, char *argv[]) {
 		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 		glm::mat4 view = GameCamera.GetViewMatrix();
 		for (int i = 0; i < 10; i++) {
+			// set static colors / lights
+			if (i%3==0) {
+				testCube.SetVector3f("objectColor", glm::vec3(1.0f, 0.3f, 0.3f), true);
+				testCube.SetVector3f("lightColor", glm::vec3(1.0f, 0.0f, 0.4f), true);
+			} else {
+				testCube.SetVector3f("objectColor", cubeColor, true);
+				testCube.SetVector3f("lightColor", lightColor, true);
+			}
+			testCube.SetVector3f("lightPos", lightPos, true);
+
 			cubeRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
 			outlineRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
 		}

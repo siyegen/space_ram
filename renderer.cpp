@@ -3,6 +3,7 @@
 #include <iostream>
 
 Renderer::Renderer(Shader shader, std::vector<GLfloat> vertices) {
+
 	this->shader = shader;
 	this->vertices = vertices;
 	initRenderData();

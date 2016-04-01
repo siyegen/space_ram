@@ -21,7 +21,7 @@ private:
 	// Render state
 	Shader shader;
 	GLuint VAO, VBO;
-	// Other object, cube/etc will own this and be responsible for 
+	// Other object, cube/etc will own this and be responsible for
 	// cleaning up when it's done
 	std::vector<GLfloat> vertices;
 
