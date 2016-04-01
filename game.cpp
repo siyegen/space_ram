@@ -3,7 +3,7 @@
 
 
 Game::Game(GLuint width, GLuint height)
-	: State(GameState::GAME_ACTIVE), Keys(), Width(width), Height(height) {
+	: State(GameState::GAME_MENU), Keys(), Width(width), Height(height) {
 
 }
 

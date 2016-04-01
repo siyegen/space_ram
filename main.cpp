@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 	Camera GameCamera(glm::vec3(0.0f, 12.5f, 20.0f));
 
 	// Test cube
-	GLfloat vertices[] = {
+	std::vector<GLfloat> vertices {
 		 // Position			//Normal
 		-0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
@@ -99,21 +99,7 @@ int main(int argc, char *argv[]) {
 	
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/lamp.frag");
 
-	GLuint VBO, testCubeVAO;
-	glGenVertexArrays(1, &testCubeVAO);
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindVertexArray(testCubeVAO);
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	// Normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-	glBindVertexArray(0); // Unbind VAO
+	Renderer cubeRenderer(testCube, vertices);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
@@ -139,18 +125,14 @@ int main(int argc, char *argv[]) {
 		glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
-		testCube.Use();
 
 		// Test Camera Setup
 		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 		glm::mat4 view = GameCamera.GetViewMatrix();
-		testCube.SetMatrix4("view", view);
-		testCube.SetMatrix4("projection", projection);
-		testCube.SetMatrix4("model", glm::mat4());
-
-		glBindVertexArray(testCubeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		cubeRenderer.Draw(glm::vec3(), view, projection);
+		for (int i = 1; i <= 10; i++) {
+			cubeRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
+		}
 
 		glfwSwapBuffers(window);
 	}

@@ -1,8 +1,11 @@
 #include "renderer.h"
 
-Renderer::Renderer(Shader &shader, const GLfloat* vertices[]) {
-	shader = shader;
-	vertices = vertices;
+#include <iostream>
+
+Renderer::Renderer(Shader shader, std::vector<GLfloat> vertices) {
+	this->shader = shader;
+	this->vertices = vertices;
+	initRenderData();
 }
 
 Renderer::~Renderer() {
@@ -10,17 +13,27 @@ Renderer::~Renderer() {
 }
 
 void Renderer::Draw(glm::vec3 position, glm::mat4 view, glm::mat4 projection) {
-	glBindVertexArray(0);
+	shader.Use();
+
+	glm::mat4 model;
+	model = glm::translate(model, position);
+
+	shader.SetMatrix4("view", view);
+	shader.SetMatrix4("projection", projection);
+	shader.SetMatrix4("model", model);
+
+	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
 
 void Renderer::initRenderData() {
+	std::cout << "size" << this->vertices.size() << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(*vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size()* sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
 	// Position attribute
