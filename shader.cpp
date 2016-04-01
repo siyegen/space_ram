@@ -65,8 +65,7 @@ void Shader::SetVector2f(const GLchar *name, const glm::vec2 &value, GLboolean u
 	glUniform2f(glGetUniformLocation(ID, name), value.x, value.y);
 }
 void Shader::SetVector3f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLboolean useShader) {
-	if (useShader)
-		this->Use();
+	if (useShader) Use();
 	glUniform3f(glGetUniformLocation(ID, name), x, y, z);
 }
 void Shader::SetVector3f(const GLchar *name, const glm::vec3 &value, GLboolean useShader) {
