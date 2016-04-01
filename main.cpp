@@ -6,7 +6,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "game.h"
+#include "camera.h"
 #include "resource_manager.h"
+#include "renderer.h"
 
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -46,6 +48,8 @@ int main(int argc, char *argv[]) {
 
 	// Initialize game
 	SpaceRam.Init();
+	// Camera Init
+	Camera GameCamera(glm::vec3(0.0f, 12.5f, 20.0f));
 
 	// Test cube
 	GLfloat vertices[] = {
@@ -138,8 +142,8 @@ int main(int argc, char *argv[]) {
 		testCube.Use();
 
 		// Test Camera Setup
-		glm::mat4 projection = glm::perspective(45.0f, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, -4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
+		glm::mat4 view = GameCamera.GetViewMatrix();
 		testCube.SetMatrix4("view", view);
 		testCube.SetMatrix4("projection", projection);
 		testCube.SetMatrix4("model", glm::mat4());
