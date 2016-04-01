@@ -97,10 +97,12 @@ int main(int argc, char *argv[]) {
 		-0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
 	};
-	
+
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/lamp.frag");
+	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
 
 	Renderer cubeRenderer(testCube, vertices);
+	Renderer outlineRenderer(outlineCube, vertices);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
@@ -130,9 +132,9 @@ int main(int argc, char *argv[]) {
 		// Test Camera Setup
 		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 		glm::mat4 view = GameCamera.GetViewMatrix();
-		cubeRenderer.Draw(glm::vec3(), view, projection);
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 0; i < 10; i++) {
 			cubeRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
+			outlineRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
 		}
 
 		glfwSwapBuffers(window);
