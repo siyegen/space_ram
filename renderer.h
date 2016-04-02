@@ -17,9 +17,9 @@ public:
 	~Renderer();
 
 	void Draw(glm::vec3 position, glm::mat4 view, glm::mat4 projection);
-private:
-	// Render state
+	// Expose shader to pass uniforms in
 	Shader shader;
+private:
 	GLuint VAO, VBO;
 	// Other object, cube/etc will own this and be responsible for
 	// cleaning up when it's done
