@@ -21,6 +21,8 @@ const GLuint SCREEN_WIDTH = 1280;
 const GLuint SCREEN_HEIGHT = 1024;
 
 Game SpaceRam(SCREEN_WIDTH, SCREEN_HEIGHT);
+// BG color
+const glm::vec4 BG_COLOR(0.1f, 0.1f, 0.15f, 1.0f);
 
 int main(int argc, char *argv[]) {
 	glfwInit();
@@ -131,7 +133,7 @@ int main(int argc, char *argv[]) {
 		SpaceRam.Update(deltaTime);
 
 		// Render
-		glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+		glClearColor(BG_COLOR.x, BG_COLOR.y, BG_COLOR.z, BG_COLOR.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
 
