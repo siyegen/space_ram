@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "resource_manager.h"
 #include "renderer.h"
+#include "game_object.h"
 
 #include <iostream>
 
@@ -102,15 +103,23 @@ int main(int argc, char *argv[]) {
 		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
 	};
 
-	glm::vec3 cubeColor(0.31f, 1.0f, 0.31f);
-	glm::vec3 lightColor(0.8f, 0.5f, 1.0f);
-	glm::vec3 lightPos(1.2f, 15.0f, 2.0f);
-
+	LightSource *lightSource = new LightSource{
+		glm::vec3(1.2f, 15.0f, 2.0f),
+		glm::vec3(0.8f, 0.5f, 1.0f),
+	};
+	
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
 
 	Renderer cubeRenderer(testCube, vertices);
 	Renderer outlineRenderer(outlineCube, vertices);
+
+	// Temp draw 5 cubes
+	std::vector<GameObject> cubes;
+	for (int i = 0; i < 5; i++) {
+		GLfloat x = 1.0f*i;
+		cubes.push_back(GameObject(glm::vec3(x, glm::vec2()), glm::vec3(), glm::vec3(0.31f, 1.0f, 0.31f), 0.0f));
+	}
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
@@ -140,14 +149,9 @@ int main(int argc, char *argv[]) {
 		// Test Camera Setup
 		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 		glm::mat4 view = GameCamera.GetViewMatrix();
-		for (int i = 0; i < 10; i++) {
-			// set static colors / lights
-			cubeRenderer.shader.SetVector3f("objectColor", cubeColor, true);
-			cubeRenderer.shader.SetVector3f("lightColor", lightColor, true);
-			cubeRenderer.shader.SetVector3f("lightPos", lightPos, true);
-
-			cubeRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
-			outlineRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
+		for (auto &cube : cubes) {
+			cube.Draw(cubeRenderer, view, projection, lightSource);
+			cube.Draw(outlineRenderer, view, projection, lightSource);
 		}
 
 		glfwSwapBuffers(window);
@@ -156,6 +160,7 @@ int main(int argc, char *argv[]) {
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
 
+	delete lightSource;
 	glfwTerminate();
 	return 0;
 }

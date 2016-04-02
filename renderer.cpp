@@ -3,7 +3,7 @@
 #include <iostream>
 
 Renderer::Renderer(Shader shader, std::vector<GLfloat> vertices) {
-
+	// this-> used because of shadowing
 	this->shader = shader;
 	this->vertices = vertices;
 	initRenderData();
@@ -29,7 +29,6 @@ void Renderer::Draw(glm::vec3 position, glm::mat4 view, glm::mat4 projection) {
 }
 
 void Renderer::initRenderData() {
-	std::cout << "size" << this->vertices.size() << std::endl;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 

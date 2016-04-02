@@ -6,29 +6,25 @@
 
 #include <glm/glm.hpp>
 
-#include <renderer>
+#include "renderer.h"
+
+struct LightSource {
+	glm::vec3 lightPos;
+	glm::vec3 lightColor;
+};
 
 class GameObject {
 public:
-  glm::vec3 position, size, color;
+  glm::vec3 Position, Size, Color;
 
-  // Maybe make 2-pass renderer and use base class?
-  std::vector<*Renderer> renderers;
+  GLfloat Rotation;
+  GLboolean IsAlive;
 
+  GameObject();
+  GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation);
 
   // light is optional
-  void Draw(glm::vec3* lightPos=nullptr, glm::vec3* lightColor=nullptr);
-}
+  void Draw(Renderer &renderer, glm::mat4 camera, glm::mat4 projection, const LightSource *lightSource=nullptr);
+};
 
 #endif
-
-// vector of renderer, order matters
-// Or, base renderer and effect renderer?
-// color
-// position, size
-
-
-// other state here?
-// constructor and destructor
-
-// draw
