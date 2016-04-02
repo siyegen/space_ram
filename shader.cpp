@@ -88,7 +88,8 @@ void Shader::SetMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean u
 void Shader::checkCompileErrors(const GLuint &object, GLCOMPILETYPE type) {
 	GLint success;
 	GLchar infoLog[1024];
-	std::string displayType = GLCOMPILETYPESTRMAP[type];
+	std::string displayType = Shader::GLCOMPILETYPE_to_string(type);
+	
 	if (type != GLCOMPILETYPE::PROGRAM) {
 		glGetShaderiv(object, GL_COMPILE_STATUS, &success);
 		if (!success) {
@@ -104,4 +105,15 @@ void Shader::checkCompileErrors(const GLuint &object, GLCOMPILETYPE type) {
 			std::cout << infoLog << "\n -- --------------------------------------------------- -- \n";
 		}
 	}
+}
+
+std::string Shader::GLCOMPILETYPE_to_string(const GLCOMPILETYPE type) {
+	std::string result;
+	auto typeSearch = GLCOMPILETYPESTRMAP.find(type);
+	if (typeSearch != GLCOMPILETYPESTRMAP.end()) {
+		result = typeSearch->second;
+	} else {
+		result = "Unknown";
+	}
+	return result;
 }
