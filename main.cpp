@@ -114,11 +114,17 @@ int main(int argc, char *argv[]) {
 	Renderer cubeRenderer(testCube, vertices);
 	Renderer outlineRenderer(outlineCube, vertices);
 
-	// Temp draw 5 cubes
+	// Temp draw some cubes
+	int levelWidth = 24;
+	int numCubes = levelWidth * 30;
 	std::vector<GameObject> cubes;
-	for (int i = 0; i < 5; i++) {
-		GLfloat x = 1.0f*i;
-		cubes.push_back(GameObject(glm::vec3(x, glm::vec2()), glm::vec3(), glm::vec3(0.31f, 1.0f, 0.31f), 0.0f));
+	for (int i = 0, j = 0; i < numCubes; i++) {
+		GLfloat x = 1.0f * (i%levelWidth);
+		if (i != 0 && i % levelWidth == 0) {
+			j++;
+		}
+		GLfloat z = -1.0f * j;
+		cubes.push_back(GameObject(glm::vec3(x, 0.0f, z), glm::vec3(), glm::vec3(0.31f, 1.0f, 0.31f), 0.0f));	
 	}
 
 	// Start Game within Menu State
