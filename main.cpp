@@ -140,14 +140,9 @@ int main(int argc, char *argv[]) {
 		glm::mat4 view = GameCamera.GetViewMatrix();
 		for (int i = 0; i < 10; i++) {
 			// set static colors / lights
-			if (i%3==0) {
-				testCube.SetVector3f("objectColor", glm::vec3(1.0f, 0.3f, 0.3f), true);
-				testCube.SetVector3f("lightColor", glm::vec3(1.0f, 0.0f, 0.4f), true);
-			} else {
-				testCube.SetVector3f("objectColor", cubeColor, true);
-				testCube.SetVector3f("lightColor", lightColor, true);
-			}
-			testCube.SetVector3f("lightPos", lightPos, true);
+			cubeRenderer.shader.SetVector3f("objectColor", cubeColor, true);
+			cubeRenderer.shader.SetVector3f("lightColor", lightColor, true);
+			cubeRenderer.shader.SetVector3f("lightPos", lightPos, true);
 
 			cubeRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
 			outlineRenderer.Draw(glm::vec3(1.0f*i, 0.0f, 0.0f), view, projection);
