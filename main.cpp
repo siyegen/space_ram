@@ -55,7 +55,8 @@ int main(int argc, char *argv[]) {
 	// Initialize game
 	SpaceRam.Init();
 	// Camera Init
-	Camera GameCamera(glm::vec3(0.0f, 12.5f, 20.0f));
+	Camera GameCamera(glm::vec3((24/2)-0.5f, 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
+	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 
 	// Test cube
 	std::vector<GLfloat> vertices {
@@ -104,7 +105,7 @@ int main(int argc, char *argv[]) {
 	};
 
 	LightSource *lightSource = new LightSource{
-		glm::vec3(1.2f, 15.0f, 2.0f),
+		glm::vec3((24/2)-0.5f, 15.0f, 2.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
 	
@@ -114,17 +115,22 @@ int main(int argc, char *argv[]) {
 	Renderer cubeRenderer(testCube, vertices);
 	Renderer outlineRenderer(outlineCube, vertices);
 
-	// Temp draw some cubes
+	testCube.Use().SetMatrix4("projection", projection);
+	outlineCube.Use().SetMatrix4("projection", projection);
+
+	// Will be replaced by "GameLevel" object
 	int levelWidth = 24;
 	int numCubes = levelWidth * 30;
 	std::vector<GameObject> cubes;
 	for (int i = 0, j = 0; i < numCubes; i++) {
+		glm::vec3 color(0.31f, 1.0f, 0.31f);
+		if (i >= numCubes / 2) color = glm::vec3(0.31f, 0.31f, 1.0f);
 		GLfloat x = 1.0f * (i%levelWidth);
 		if (i != 0 && i % levelWidth == 0) {
 			j++;
 		}
 		GLfloat z = -1.0f * j;
-		cubes.push_back(GameObject(glm::vec3(x, 0.0f, z), glm::vec3(), glm::vec3(0.31f, 1.0f, 0.31f), 0.0f));	
+		cubes.push_back(GameObject(glm::vec3(x, 0.0f, z), glm::vec3(), color, 0.0f));	
 	}
 
 	// Start Game within Menu State
@@ -133,6 +139,9 @@ int main(int argc, char *argv[]) {
 	// DeltaTime variables
 	GLfloat deltaTime = 0.0f;
 	GLfloat lastFrame = 0.0f;
+
+	// Camera
+	glm::mat4 view = GameCamera.GetViewMatrix();
 	while (!glfwWindowShouldClose(window)) {
 		// Calculate delta time
 		GLfloat currentFrame = glfwGetTime();
@@ -152,12 +161,9 @@ int main(int argc, char *argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
 
-		// Test Camera Setup
-		glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
-		glm::mat4 view = GameCamera.GetViewMatrix();
 		for (auto &cube : cubes) {
-			cube.Draw(cubeRenderer, view, projection, lightSource);
-			cube.Draw(outlineRenderer, view, projection, lightSource);
+			cube.Draw(cubeRenderer, view, lightSource);
+			cube.Draw(outlineRenderer, view, lightSource);
 		}
 
 		glfwSwapBuffers(window);

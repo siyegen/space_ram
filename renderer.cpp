@@ -13,14 +13,13 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &VAO);
 }
 
-void Renderer::Draw(glm::vec3 position, glm::mat4 view, glm::mat4 projection) {
+void Renderer::Draw(glm::vec3 position, glm::mat4 view) {
 	shader.Use();
 
 	glm::mat4 model;
 	model = glm::translate(model, position);
 
 	shader.SetMatrix4("view", view);
-	shader.SetMatrix4("projection", projection);
 	shader.SetMatrix4("model", model);
 
 	glBindVertexArray(VAO);

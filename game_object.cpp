@@ -9,7 +9,7 @@ GameObject::GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat r
 	Color = color;
 }
 
-void GameObject::Draw(Renderer &renderer, glm::mat4 camera, glm::mat4 projection, const LightSource * lightSource) {
+void GameObject::Draw(Renderer &renderer, glm::mat4 camera, const LightSource *lightSource) {
 	Shader currentShader = renderer.shader.Use();
 	if (lightSource) {
 		currentShader.SetVector3f("lightColor", lightSource->lightColor);
@@ -17,7 +17,7 @@ void GameObject::Draw(Renderer &renderer, glm::mat4 camera, glm::mat4 projection
 	}
 	currentShader.SetVector3f("objectColor", Color);
 
-	renderer.Draw(Position, camera, projection);
+	renderer.Draw(Position, camera);
 }
 
 
