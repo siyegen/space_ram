@@ -10,6 +10,7 @@
 #include "resource_manager.h"
 #include "renderer.h"
 #include "game_object.h"
+#include "game_level.h"
 
 #include <iostream>
 
@@ -105,7 +106,7 @@ int main(int argc, char *argv[]) {
 	};
 
 	LightSource *lightSource = new LightSource{
-		glm::vec3((24/2)-0.5f, 15.0f, 2.0f),
+		glm::vec3((24/2)-0.5f, 10.0f, -9.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
 	
@@ -118,20 +119,7 @@ int main(int argc, char *argv[]) {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	// Will be replaced by "GameLevel" object
-	int levelWidth = 24;
-	int numCubes = levelWidth * 30;
-	std::vector<GameObject> cubes;
-	for (int i = 0, j = 0; i < numCubes; i++) {
-		glm::vec3 color(0.31f, 1.0f, 0.31f);
-		if (i >= numCubes / 2) color = glm::vec3(0.31f, 0.31f, 1.0f);
-		GLfloat x = 1.0f * (i%levelWidth);
-		if (i != 0 && i % levelWidth == 0) {
-			j++;
-		}
-		GLfloat z = -1.0f * j;
-		cubes.push_back(GameObject(glm::vec3(x, 0.0f, z), glm::vec3(), color, 0.0f));	
-	}
+	GameLevel testLevel("testLevel", "", 24, 30, cubeRenderer, outlineRenderer);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
@@ -161,10 +149,7 @@ int main(int argc, char *argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
 
-		for (auto &cube : cubes) {
-			cube.Draw(cubeRenderer, view, lightSource);
-			cube.Draw(outlineRenderer, view, lightSource);
-		}
+		testLevel.Draw(view, lightSource);
 
 		glfwSwapBuffers(window);
 	}
