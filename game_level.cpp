@@ -1,11 +1,15 @@
 #include "game_level.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <random>
 
 GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer) {
 	LevelName = name;
 	Width = width;
 	Height = height;
 	int numberOfCubes = Width*Height;
+	srand(static_cast <unsigned> (time(0)));
 	CenterPoint = glm::vec3((Width/2)-0.5f, 0.5f, (Height/2-0.5f));
 
 	LevelCubes.reserve(numberOfCubes);
@@ -30,6 +34,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	GLuint i = 0, j = 0;
 	glm::vec3 normalColor(0.31f, 1.0f, 0.31f);
 	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
+	GLfloat M = -0.1f, N = 0.65f;
 	try {
 		levelFile.open(file);
 		while (std::getline(levelFile, line)) {
@@ -38,20 +43,24 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 				std::cout << "empty line" << std::endl;
 				continue;
 			}
-			std::cout << line.size() << std::endl;
+
 			for (auto &tile : line) { // char by char
 				int t = tile - '0';
 				GLfloat x = 1.0f * i++;
 				GLfloat z = -1.0f * j;
+				GLfloat y = M + (rand() / (RAND_MAX / (N - M)));
 				CubeState state = GameLevel::getState(t);
+				if (state == CubeState::Water) y = 0.0f;
+				else y = ((int)(y *100.0f))/100.0f;
 				if (state == CubeState::Normal) {
 					colorPointer = &normalColor;
+					std::cout << "height: " << y << std::endl;
 				} else if (state == CubeState::Water) {
 					colorPointer = &waterColor;
 				} else {
 					colorPointer = &normalColor;
 				}
-				GameObject obj(glm::vec3(x, 0.0f, z), glm::vec3(), *colorPointer, 0.0f);
+				GameObject obj(glm::vec3(x, y, z), glm::vec3(), *colorPointer, 0.0f);
 				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j) });
 			}
 			j++; i = 0;

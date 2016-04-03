@@ -24,12 +24,12 @@ void Camera::RotateRight() {
 	GLfloat moveXBy = 0.0f;
 	if (CameraPanState == PanState::Center) {
 		moveXBy = Radius;
-		Yaw = -180.0f;
 		CameraPanState = PanState::Right;
 	} else if (CameraPanState == PanState::Left) {
 		moveXBy = Radius;
 		CameraPanState = PanState::Center;
 	}
+	Position.x += moveXBy;
 	updateCameraVectors();
 }
 
