@@ -19,7 +19,7 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	for (auto &cube : LevelCubes) {
 		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource);
-		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource);
+		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor);
 	}
 }
 
@@ -34,11 +34,14 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	GLuint i = 0, j = 0;
 	glm::vec3 normalColor(0.31f, 1.0f, 0.31f);
 	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
+	glm::vec4 normalOutline(0.2f, 0.7f, 0.2f, 0.7f);
+	glm::vec4 waterOutline(0.0f, 0.4f, 0.9f, 0.7f);
 	GLfloat M = -0.1f, N = 0.65f;
 	try {
 		levelFile.open(file);
 		while (std::getline(levelFile, line)) {
 			glm::vec3 *colorPointer = &normalColor;
+			glm::vec4 *outlinePointer = &normalOutline;
 			if (line.empty()) {
 				std::cout << "empty line" << std::endl;
 				continue;
@@ -50,18 +53,19 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 				GLfloat z = -1.0f * j;
 				GLfloat y = M + (rand() / (RAND_MAX / (N - M)));
 				CubeState state = GameLevel::getState(t);
-				if (state == CubeState::Water) y = 0.0f;
-				else y = ((int)(y *100.0f))/100.0f;
+				y = ((int)(y *100.0f)) / 100.0f;
 				if (state == CubeState::Normal) {
 					colorPointer = &normalColor;
-					std::cout << "height: " << y << std::endl;
+					outlinePointer = &normalOutline;
 				} else if (state == CubeState::Water) {
 					colorPointer = &waterColor;
+					y = 0.0f;
+					outlinePointer = &waterOutline;
 				} else {
 					colorPointer = &normalColor;
 				}
 				GameObject obj(glm::vec3(x, y, z), glm::vec3(), *colorPointer, 0.0f);
-				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j) });
+				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
 			}
 			j++; i = 0;
 		}

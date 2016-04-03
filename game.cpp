@@ -67,7 +67,7 @@ void Game::Init() {
 	};
 
 	lightSource = new LightSource{
-		glm::vec3((24 / 2) - 0.5f, 10.0f, -9.0f),
+		glm::vec3((24 / 2) - 0.5f, 10.0f, -15.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
 

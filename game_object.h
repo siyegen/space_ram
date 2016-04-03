@@ -24,7 +24,7 @@ public:
   GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation);
 
   // light is optional
-  void Draw(Renderer &renderer, glm::mat4 camera, const LightSource *lightSource=nullptr);
+  void Draw(Renderer &renderer, glm::mat4 camera, const LightSource *lightSource=nullptr, const glm::vec4 *outlineColor=nullptr);
 };
 
 #endif

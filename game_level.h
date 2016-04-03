@@ -25,6 +25,7 @@ struct Cube {
 	GameObject cubeObj;
 	CubeState state;
 	glm::vec2 coords; // row/col values
+	glm::vec4 outlineColor;
 };
 
 class GameLevel {
