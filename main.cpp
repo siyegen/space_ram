@@ -14,6 +14,7 @@
 
 #include <iostream>
 
+
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]) {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	GameLevel testLevel("testLevel", "", 24, 30, cubeRenderer, outlineRenderer);
+	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;

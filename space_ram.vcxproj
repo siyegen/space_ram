@@ -143,6 +143,9 @@
     <None Include="shaders\outline.vs" />
     <None Include="shaders\simple3d.vs" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="levels\level_one.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
