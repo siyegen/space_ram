@@ -24,6 +24,15 @@ const GLfloat SPEED = 7.0f;
 const GLfloat SENSITIVTY = 0.25f;
 const GLfloat ZOOM = 45.0f;
 
+const GLfloat RightYaw = 0.0f;
+const GLfloat LeftYaw = 0.0f;
+
+enum class PanState {
+	Center,
+	Left,
+	Right
+};
+
 class Camera {
 public:
 	// Attributes
@@ -33,6 +42,11 @@ public:
 	glm::vec3 Up;
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
+
+	GLfloat Radius;
+
+	PanState CameraPanState = PanState::Center;
+
 	// Eular Angles
 	GLfloat Yaw;
 	GLfloat Pitch;
@@ -41,16 +55,21 @@ public:
 	GLfloat MouseSensitivity;
 	GLfloat Zoom;
 
+	GLboolean IsMoving = false;
+
 	// Constructor with vectors
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), GLfloat yaw = YAW, GLfloat pitch = PITCH);
 
 	glm::mat4 GetViewMatrix();
 
-	// These probably don't belong here
-	void ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime);
-	void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch = true);
-	void ProcessMouseScroll(GLfloat yoffset);
+	void Update(GLfloat dt);
+	void RotateRight(); // Refers to Yaw
+	void RotateLeft();
 
 private:
 	void updateCameraVectors();
 };
+
+//GLfloat radius = 10.0f;
+//GLfloat camX = sin(glfwGetTime()) * radius;
+//GLfloat camZ = cos(glfwGetTime()) * radius;

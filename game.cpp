@@ -5,7 +5,7 @@ Renderer *outlineRenderer;
 LightSource *lightSource;
 
 Game::Game(GLuint width, GLuint height)
-	: State(GameState::GAME_MENU), Keys(), Width(width), Height(height) {
+	: State(GameState::MENU), Keys(), Width(width), Height(height) {
 
 }
 
@@ -88,9 +88,16 @@ void Game::Update(GLfloat dt) {
 
 }
 
-
 void Game::ProcessInput(GLfloat dt) {
-
+	if (State == GameState::ACTIVE) {
+		if (Keys[GLFW_KEY_Q]) {
+			GameCamera.RotateLeft();
+			Keys[GLFW_KEY_Q] = GL_FALSE;
+		} else if (Keys[GLFW_KEY_E]) {
+			GameCamera.RotateRight();
+			Keys[GLFW_KEY_E] = GL_FALSE;
+		}
+	}
 }
 
 void Game::Render() {

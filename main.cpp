@@ -57,9 +57,8 @@ int main(int argc, char *argv[]) {
 	// Initialize game
 	SpaceRam.Init();
 
-
 	// Start Game within Menu State
-	SpaceRam.State = GameState::GAME_ACTIVE;
+	SpaceRam.State = GameState::ACTIVE;
 
 	// DeltaTime variables
 	GLfloat deltaTime = 0.0f;
@@ -89,7 +88,6 @@ int main(int argc, char *argv[]) {
 
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
-
 	glfwTerminate();
 	return 0;
 }
