@@ -56,71 +56,7 @@ int main(int argc, char *argv[]) {
 
 	// Initialize game
 	SpaceRam.Init();
-	// Camera Init
-	Camera GameCamera(glm::vec3((24/2)-0.5f, 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
-	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 100.0f);
 
-	// Test cube
-	std::vector<GLfloat> vertices {
-		 // Position			//Normal
-		-0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,	0.0f,  0.0f, -1.0f,
-
-		-0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,	0.0f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,	-1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,	-1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,	1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,	1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,	0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,	0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,	0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
-	};
-
-	LightSource *lightSource = new LightSource{
-		glm::vec3((24/2)-0.5f, 10.0f, -9.0f),
-		glm::vec3(0.8f, 0.5f, 1.0f),
-	};
-	
-	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
-	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
-
-	Renderer cubeRenderer(testCube, vertices);
-	Renderer outlineRenderer(outlineCube, vertices);
-
-	testCube.Use().SetMatrix4("projection", projection);
-	outlineCube.Use().SetMatrix4("projection", projection);
-
-	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
 
 	// Start Game within Menu State
 	SpaceRam.State = GameState::GAME_ACTIVE;
@@ -129,8 +65,6 @@ int main(int argc, char *argv[]) {
 	GLfloat deltaTime = 0.0f;
 	GLfloat lastFrame = 0.0f;
 
-	// Camera
-	glm::mat4 view = GameCamera.GetViewMatrix();
 	while (!glfwWindowShouldClose(window)) {
 		// Calculate delta time
 		GLfloat currentFrame = glfwGetTime();
@@ -150,15 +84,12 @@ int main(int argc, char *argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
 
-		testLevel.Draw(view, lightSource);
-
 		glfwSwapBuffers(window);
 	}
 
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
 
-	delete lightSource;
 	glfwTerminate();
 	return 0;
 }

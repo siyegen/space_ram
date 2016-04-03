@@ -1,7 +1,7 @@
 #include "game_level.h"
 #include <iostream>
 
-GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer &firstRenderer, Renderer &effectRenderer) {
+GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer) {
 	LevelName = name;
 	Width = width;
 	Height = height;
@@ -19,7 +19,7 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	}
 }
 
-void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Renderer &first, Renderer &effect) {
+void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect) {
 	LevelCubes.clear();
 	std::string line;
 	std::ifstream levelFile;
@@ -52,7 +52,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 					colorPointer = &normalColor;
 				}
 				GameObject obj(glm::vec3(x, 0.0f, z), glm::vec3(), *colorPointer, 0.0f);
-				LevelCubes.push_back(Cube{ first, effect, obj, state, glm::vec2(i, j) });
+				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j) });
 			}
 			j++; i = 0;
 		}

@@ -3,8 +3,18 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <vector>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
+#include "camera.h"
+#include "resource_manager.h"
+#include "renderer.h"
+#include "game_object.h"
+#include "game_level.h"
+
 
 enum class GameState {
 	GAME_ACTIVE,
@@ -18,6 +28,11 @@ public:
 	GameState  State;
 	GLboolean  Keys[1024];
 	GLuint	   Width, Height;
+
+	std::vector<GameLevel> Levels;
+	GLuint CurrentLevel = 0;
+
+	Camera GameCamera;
 
 	Game(GLuint width, GLuint height);
 	~Game();

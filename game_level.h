@@ -37,12 +37,12 @@ public:
 	std::vector<Cube> LevelCubes;
 
 	// This is ugly, but not sure how else to do it atm.
-	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer &firstRenderer, Renderer &effectRenderer);
+	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer);
 
 	void Draw(glm::mat4 camera, LightSource *lightSource); // Cube will draw
 
 private:
-	void fromFile(const GLchar *file, GLuint width, GLuint height, Renderer &first, Renderer &effect);
+	void fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect);
 	static CubeState getState(GLuint tile);
 };
 
