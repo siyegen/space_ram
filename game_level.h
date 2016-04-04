@@ -12,6 +12,14 @@
 #include "game_object.h"
 #include "renderer.h"
 
+const int NumberOfGroundColors = 4;
+
+const glm::vec3 GroundColors[NumberOfGroundColors] {
+	glm::vec3(0.31f, 1.0f, 0.31f),
+	glm::vec3(0.39f, 1.0f, 0.31f),
+	glm::vec3(0.31f, 0.9f, 0.31f),
+	glm::vec3(0.31f, 1.0f, 0.39f)
+};
 
 enum class CubeState {
 	Normal,
@@ -45,6 +53,8 @@ public:
 private:
 	void fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect);
 	static CubeState getState(GLuint tile);
+	static GLfloat getHeight(CubeState state, GLfloat minVal, GLfloat maxVal);
+	static const glm::vec3* randomGroundColor();
 };
 
 #endif

@@ -12,6 +12,7 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 	srand(static_cast <unsigned> (time(0)));
 	CenterPoint = glm::vec3((Width/2)-0.5f, 0.5f, (Height/2-0.5f));
 
+
 	LevelCubes.reserve(numberOfCubes);
 	fromFile(file, width, height, firstRenderer, effectRenderer);
 }
@@ -36,30 +37,27 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
 	glm::vec4 normalOutline(0.2f, 0.7f, 0.2f, 0.7f);
 	glm::vec4 waterOutline(0.0f, 0.4f, 0.9f, 0.7f);
-	GLfloat M = -0.1f, N = 0.65f;
 	try {
 		levelFile.open(file);
 		while (std::getline(levelFile, line)) {
-			glm::vec3 *colorPointer = &normalColor;
-			glm::vec4 *outlinePointer = &normalOutline;
-			if (line.empty()) {
-				std::cout << "empty line" << std::endl;
-				continue;
-			}
+			// init default colors
+			const glm::vec3 *colorPointer = &normalColor;
+			const glm::vec4 *outlinePointer = &normalOutline;
 
-			for (auto &tile : line) { // char by char
-				int t = tile - '0';
+			// Build tile based on each character
+			for (auto &tile : line) {
+				int t = tile - '0'; // ascii code to int, has to be a better way
+				CubeState state = GameLevel::getState(t);
 				GLfloat x = 1.0f * i++;
 				GLfloat z = -1.0f * j;
-				GLfloat y = M + (rand() / (RAND_MAX / (N - M)));
-				CubeState state = GameLevel::getState(t);
-				y = ((int)(y *100.0f)) / 100.0f;
+				GLfloat y = GameLevel::getHeight(state, -0.1f, 0.65f);
+
 				if (state == CubeState::Normal) {
-					colorPointer = &normalColor;
+					colorPointer = GameLevel::randomGroundColor();
+					// colorPointer = &normalColor;
 					outlinePointer = &normalOutline;
 				} else if (state == CubeState::Water) {
 					colorPointer = &waterColor;
-					y = 0.0f;
 					outlinePointer = &waterOutline;
 				} else {
 					colorPointer = &normalColor;
@@ -73,7 +71,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 		std::cout << "ERROR::LEVEL::LOAD" << std::string(e.what()) << std::endl;
 		exit(-1);
 	}
-	
+
 	levelFile.close();
 }
 
@@ -93,4 +91,18 @@ CubeState GameLevel::getState(GLuint tile) {
 		break;
 	}
 	return state;
+}
+
+GLfloat GameLevel::getHeight(CubeState state, GLfloat minVal, GLfloat maxVal) {
+	if (state == CubeState::Water) {
+		return 0.0f;
+	}
+
+	GLfloat y = minVal + (rand() / (RAND_MAX / (maxVal - minVal)));
+	return ((int)(y *100.0f)) / 100.0f; // 2 dec places
+}
+
+const glm::vec3* GameLevel::randomGroundColor() {
+	GLint cc = rand() / (RAND_MAX / (NumberOfGroundColors));
+	return &GroundColors[cc];
 }
