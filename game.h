@@ -4,6 +4,7 @@
 #define GAME_H
 
 #include <vector>
+#include <map>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -41,6 +42,7 @@ public:
 	void Init();
 	// GameLoop
 	void ProcessInput(GLfloat dt);
+	void HandleClick(GLuint button, glm::vec2 position);
 	void Update(GLfloat dt);
 	void Render();
 };

@@ -17,6 +17,7 @@
 
 // GLFW function declerations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow* window, int button, int action, int mods);
 
 // The Width of the screen
 const GLuint SCREEN_WIDTH = 1280;
@@ -44,6 +45,7 @@ int main(int argc, char *argv[]) {
 	glGetError();
 
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_callback);
 
 	// OpenGL configuration
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -103,6 +105,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		else if (action == GLFW_RELEASE) {
 			SpaceRam.Keys[key] = GL_FALSE;
+		}
+	}
+}
+
+void mouse_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		GLdouble xPos;
+		GLdouble yPos;
+		glfwGetCursorPos(window, &xPos, &yPos);
+		if (xPos && yPos) {
+			SpaceRam.HandleClick(GLFW_MOUSE_BUTTON_LEFT, glm::vec2(xPos, yPos));
 		}
 	}
 }
