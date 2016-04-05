@@ -121,7 +121,7 @@ void Game::HandleClick(GLuint button, glm::vec2 position) {
 	Cube *cube = nullptr;
 	if (index >= 0 && index <= Levels[CurrentLevel].LevelCubes.size()) {
 		cube = &Levels[CurrentLevel].LevelCubes[index];
-		cube->cubeObj.Color = glm::vec3(1.0f);
+		cube->cubeObj.Color = glm::vec3(1.0f, 0.0f, 0.31f);
 	}
 }
 

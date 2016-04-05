@@ -43,7 +43,7 @@ public:
 	glm::vec3 Right;
 	glm::vec3 WorldUp;
 
-	GLfloat Radius;
+	GLfloat Radius, ZRadius;
 
 	PanState CameraPanState = PanState::Center;
 
