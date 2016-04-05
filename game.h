@@ -38,11 +38,14 @@ public:
 	Game(GLuint width, GLuint height);
 	~Game();
 
+	bool MouseHeld = false;
+
 	// Initialize game state (load all shaders/textures/levels)
 	void Init();
 	// GameLoop
 	void ProcessInput(GLfloat dt);
 	void HandleClick(GLuint button, glm::vec2 position);
+	void MoveCursor(glm::vec2 position);
 	void Update(GLfloat dt);
 	void Render();
 };

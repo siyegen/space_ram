@@ -19,7 +19,7 @@ Game::~Game() {
 
 void Game::Init() {
 	// Camera Init
-	GameCamera = Camera(glm::vec3((24 / 2) - 0.5f, 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
+	GameCamera = Camera(glm::vec3((24 / 2), 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
 
 	// Test cube
@@ -75,6 +75,7 @@ void Game::Init() {
 
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
+	ResourceManager::LoadShader("Debug", "shaders/outline.vs", "shaders/lamp.frag");
 
 	cubeRenderer = new Renderer(testCube, vertices);
 	outlineRenderer = new Renderer(outlineCube, vertices);
@@ -102,22 +103,42 @@ void Game::ProcessInput(GLfloat dt) {
 }
 
 void Game::HandleClick(GLuint button, glm::vec2 position) {
-	std::cout << "Mouse: " << button << " " << position.x << "-" << position.y << std::endl;
-	GLfloat x = (2.0f * position.x) / Width - 1.0f;
-	GLfloat y = 1.0f - (2.0f * position.y) / Height;
-	GLfloat z = 1.0f;
-
-	glm::vec4 rayClip(x, y, -1.0f, 1.0f);
+	//std::cout << position.x << "--" << position.y << std::endl;
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
-	glm::vec4 rayEye = glm::inverse(projection) * rayClip;
 
-	rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
-	rayEye = glm::normalize(rayEye);
-	glm::vec4 rayTemp = glm::inverse(GameCamera.GetViewMatrix()) * rayEye;
-	glm::vec3 rayWorld(rayTemp.x, rayTemp.y, rayTemp.z);
-	rayWorld = glm::normalize(rayWorld);
-	std::cout << "device: " << x << ":" << y << std::endl;
-	std::cout << "normal: " << rayWorld.x << ":" << rayWorld.y << ":" << rayWorld.z << std::endl;
+	glm::mat4 modelView = GameCamera.GetViewMatrix()*glm::mat4(0.5f);
+	glm::vec4 viewport(0, 0, Width, Height);
+	GLfloat winX = position.x;
+	GLfloat winY = Height - position.y;
+	GLfloat winZ;
+	glReadPixels((int)winX, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+	//std::cout << winX << " " << winY << " " << winZ << std::endl;
+	//glm::vec3 rayStart = glm::unProject(startPoint, modelView, projection, viewport);
+	glm::vec3 pos = glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport);
+	std::cout << (int)pos.x << " " << " " << (int)pos.z << std::endl;
+	int index = ((int)pos.z) * -24 + (int)pos.x;
+	std::cout << "index: " << index << std::endl;
+	Cube *cube = nullptr;
+	if (index >= 0 && index <= Levels[CurrentLevel].LevelCubes.size()) {
+		cube = &Levels[CurrentLevel].LevelCubes[index];
+		cube->cubeObj.Color = glm::vec3(1.0f);
+	}
+}
+
+void Game::MoveCursor(glm::vec2 position) {
+	std::cout << position.x << "--" << position.y << std::endl;
+	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
+
+	glm::mat4 modelView = GameCamera.GetViewMatrix()*glm::mat4();
+	glm::vec4 viewport(0, 0, Width, Height);
+	GLfloat winX = position.x;
+	GLfloat winY = Height - position.y;
+	GLfloat winZ;
+	glReadPixels((int)winX, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+	std::cout << winX << " " << winY << " " << winZ << std::endl;
+	//glm::vec3 rayStart = glm::unProject(startPoint, modelView, projection, viewport);
+	glm::vec3 pos = glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport) + glm::vec3(1.0f, 1.0f, -1.0f);
+	std::cout << (int)pos.x << " " << " " << (int)pos.z << std::endl;
 }
 
 void Game::Render() {

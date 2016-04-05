@@ -16,8 +16,9 @@
 
 
 // GLFW function declerations
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void mouse_callback(GLFWwindow* window, int button, int action, int mods);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
+void mousekey_callback(GLFWwindow *window, int button, int action, int mods);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 
 // The Width of the screen
 const GLuint SCREEN_WIDTH = 1280;
@@ -45,7 +46,8 @@ int main(int argc, char *argv[]) {
 	glGetError();
 
 	glfwSetKeyCallback(window, key_callback);
-	glfwSetMouseButtonCallback(window, mouse_callback);
+	glfwSetMouseButtonCallback(window, mousekey_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	// OpenGL configuration
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -109,7 +111,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-void mouse_callback(GLFWwindow* window, int button, int action, int mods) {
+void mousekey_callback(GLFWwindow* window, int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		GLdouble xPos;
 		GLdouble yPos;
@@ -117,5 +119,15 @@ void mouse_callback(GLFWwindow* window, int button, int action, int mods) {
 		if (xPos && yPos) {
 			SpaceRam.HandleClick(GLFW_MOUSE_BUTTON_LEFT, glm::vec2(xPos, yPos));
 		}
+		SpaceRam.MouseHeld = true;
+	} else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		std::cout << "Released" << std::endl;
+		SpaceRam.MouseHeld = false;
+	}
+}
+
+void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+	if (SpaceRam.MouseHeld) {
+		//SpaceRam.MoveCursor(glm::vec2(xpos, ypos));
 	}
 }

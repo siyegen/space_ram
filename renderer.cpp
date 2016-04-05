@@ -17,7 +17,7 @@ void Renderer::Draw(glm::vec3 position, glm::mat4 view) {
 	shader.Use();
 
 	glm::mat4 model;
-	model = glm::translate(model, position);
+	model = glm::translate(model, position + glm::vec3(0.5f, 0.0f, -0.5f));
 
 	shader.SetMatrix4("view", view);
 	shader.SetMatrix4("model", model);
