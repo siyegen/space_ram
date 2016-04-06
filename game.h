@@ -46,6 +46,7 @@ public:
 	void ProcessInput(GLfloat dt);
 	void HandleClick(GLuint button, glm::vec2 position);
 	void MoveCursor(glm::vec2 position);
+	void MoveCursor(double xPos, double yPos);
 	void Update(GLfloat dt);
 	void Render();
 };

@@ -47,6 +47,9 @@ public:
 	std::vector<Cube> LevelCubes;
 	std::vector<Cube> Turrets;
 
+	glm::vec2 Target;
+	bool HasTarget = false;
+
 	// This is ugly, but not sure how else to do it atm.
 	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer);
 

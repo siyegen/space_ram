@@ -14,6 +14,7 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 
 
 	LevelCubes.reserve(numberOfCubes);
+	std::cout << "numcubes: " << numberOfCubes << std::endl;
 	fromFile(file, width, height, firstRenderer, effectRenderer);
 }
 
@@ -33,7 +34,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	LevelCubes.clear();
 	std::string line;
 	std::ifstream levelFile;
-	// Apparently don't set failbit as getline reading an empty newline
+	// Apparently don't set failbit as getline reading an empty newline (as last line)
 	// raises both an eof and failbit and crashes...
 	levelFile.exceptions(std::ifstream::badbit);
 
@@ -47,6 +48,9 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	glm::vec4 turretOutline(0.7f, 0.2f, 0.0f, 0.7f);
 	try {
 		levelFile.open(file);
+		if (!levelFile) {
+			throw std::exception("Can't find file");
+		}
 		while (std::getline(levelFile, line)) {
 			// init default colors
 			const glm::vec3 *colorPointer = &normalColor;
@@ -56,6 +60,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 			for (auto &tile : line) {
 				int t = tile - '0'; // ascii code to int, has to be a better way
 				CubeState state = GameLevel::getState(t);
+				std::cout << "tile " << t << std::endl;
 				GLfloat x = 1.0f * i++;
 				GLfloat z = -1.0f * j;
 				GLfloat y = GameLevel::getHeight(state, -0.1f, 0.65f);
@@ -90,8 +95,8 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 			j++; i = 0;
 		}
 	} catch (std::exception e) {
-		std::cout << "ERROR::LEVEL::LOAD" << std::string(e.what()) << std::endl;
-		exit(-1);
+		std::cout << "ERROR::LEVEL::LOAD " << std::string(e.what()) << std::endl;
+		//exit(-1);
 	}
 
 	levelFile.close();

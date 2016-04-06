@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="levels\level_one.txt" />
+    <Text Include="level_test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

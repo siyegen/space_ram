@@ -127,7 +127,7 @@ void mousekey_callback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-	if (SpaceRam.MouseHeld) {
-		//SpaceRam.MoveCursor(glm::vec2(xpos, ypos));
+	if (SpaceRam.State == GameState::ACTIVE) {
+		SpaceRam.MoveCursor(xpos, ypos);
 	}
 }

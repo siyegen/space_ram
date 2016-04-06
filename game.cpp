@@ -68,8 +68,10 @@ void Game::Init() {
 		-0.5f,  0.5f, -0.5f,	0.0f,  1.0f,  0.0f
 	};
 
+	// Need to adjust for level
 	lightSource = new LightSource{
 		glm::vec3((24 / 2) - 0.5f, 10.0f, -15.0f),
+		//glm::vec3((6 / 2), 10.0f, -3.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
 
@@ -83,13 +85,23 @@ void Game::Init() {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
+	GameLevel testLevel("testLevel", "levels/level_one.txt", 6, 4, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel);
 }
 
 void Game::Update(GLfloat dt) {
-	for (auto &turret : Levels[CurrentLevel].Turrets) {
-		turret.cubeObj.Rotation += 2.5f;
+	GameLevel &level = Levels[CurrentLevel];
+	if (level.HasTarget) {
+		// find angle from turret to target, rotate towards
+		glm::vec2 target(level.Target.x, level.Target.y);
+		// adjust for origin position, move to render function
+		for (auto &turret : level.Turrets) {
+			glm::vec2 turretVec(turret.cubeObj.Position.x - 0.5f, turret.cubeObj.Position.z - 0.5f);
+			glm::vec2 facing = turretVec - target;
+			GLfloat angle = atan2(facing.y, facing.x);
+			std::cout << "angle " << glm::degrees(angle) << std::endl;
+			turret.cubeObj.Rotation = glm::degrees(-angle);
+		}
 	}
 }
 
@@ -111,8 +123,9 @@ void Game::ProcessInput(GLfloat dt) {
 
 void Game::HandleClick(GLuint button, glm::vec2 position) {
 	//std::cout << position.x << "--" << position.y << std::endl;
+	GameLevel &level = Levels[CurrentLevel];
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
-
+	
 	glm::mat4 modelView = GameCamera.GetViewMatrix()*glm::mat4(0.5f);
 	glm::vec4 viewport(0, 0, Width, Height);
 	GLfloat winX = position.x;
@@ -123,12 +136,38 @@ void Game::HandleClick(GLuint button, glm::vec2 position) {
 	//glm::vec3 rayStart = glm::unProject(startPoint, modelView, projection, viewport);
 	glm::vec3 pos = glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport);
 	std::cout << (int)pos.x << " " << " " << (int)pos.z << std::endl;
-	int index = ((int)pos.z) * -24 + (int)pos.x;
+	int index = ((int)pos.z) * (-1 *level.Width) + (int)pos.x;
 	std::cout << "index: " << index << std::endl;
 	Cube *cube = nullptr;
-	if (index >= 0 && index <= Levels[CurrentLevel].LevelCubes.size()) {
+	if (index >= 0 && index < Levels[CurrentLevel].LevelCubes.size()) {
 		cube = &Levels[CurrentLevel].LevelCubes[index];
 		cube->cubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
+	}
+}
+
+void Game::MoveCursor(double xPos, double yPos) {
+	//std::cout << position.x << "--" << position.y << std::endl;
+	GameLevel &level = Levels[CurrentLevel];
+	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
+
+	glm::mat4 modelView = GameCamera.GetViewMatrix()*glm::mat4(0.5f);
+	glm::vec4 viewport(0, 0, Width, Height);
+	GLfloat winX =xPos;
+	GLfloat winY = Height - yPos;
+	GLfloat winZ;
+	glReadPixels((int)winX, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+	//std::cout << winX << " " << winY << " " << winZ << std::endl;
+	//glm::vec3 rayStart = glm::unProject(startPoint, modelView, projection, viewport);
+	glm::vec3 pos = glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport);
+	std::cout << (int)pos.x << " " << " " << (int)pos.z << std::endl;
+	int index = ((int)pos.z) * (-1 * level.Width) + (int)pos.x;
+	std::cout << "index: " << index << std::endl;
+	if (index >= 0 && index < level.LevelCubes.size()) {
+		level.Target = glm::vec2(pos.x, pos.z);
+		level.HasTarget = true;
+		//Levels[CurrentLevel].target->cubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
+	} else {
+		level.HasTarget = false;
 	}
 }
 
