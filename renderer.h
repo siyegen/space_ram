@@ -16,7 +16,7 @@ public:
 	Renderer(Shader shader, const std::vector<GLfloat> verticies);
 	~Renderer();
 
-	void Draw(glm::vec3 position, glm::mat4 view);
+	void Draw(glm::vec3 position, GLfloat rotation, glm::mat4 view);
 	// Expose shader to pass uniforms in
 	Shader shader;
 private:

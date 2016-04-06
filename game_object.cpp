@@ -1,5 +1,6 @@
 #include "game_object.h"
 
+#include <iostream>
 GameObject::GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation) : IsAlive(GL_TRUE) {
 	Position = pos;
 	Size = size;
@@ -16,8 +17,7 @@ void GameObject::Draw(Renderer &renderer, glm::mat4 camera, const LightSource *l
 	if (outlineColor) {
 		currentShader.SetVector4f("outlineColor", *outlineColor);
 	}
-
-	renderer.Draw(Position, camera);
+	renderer.Draw(Position, Rotation, camera);
 }
 
 

@@ -88,6 +88,13 @@ void Game::Init() {
 }
 
 void Game::Update(GLfloat dt) {
+	for (auto &turret : Levels[CurrentLevel].Turrets) {
+		turret.cubeObj.Rotation += 2.5f;
+	}
+}
+
+void Game::Render() {
+	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 }
 
 void Game::ProcessInput(GLfloat dt) {
@@ -141,6 +148,3 @@ void Game::MoveCursor(glm::vec2 position) {
 	std::cout << (int)pos.x << " " << " " << (int)pos.z << std::endl;
 }
 
-void Game::Render() {
-	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
-}

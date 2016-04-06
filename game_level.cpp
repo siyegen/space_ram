@@ -121,6 +121,8 @@ CubeState GameLevel::getState(GLuint tile) {
 GLfloat GameLevel::getHeight(CubeState state, GLfloat minVal, GLfloat maxVal) {
 	if (state == CubeState::Water) {
 		return 0.0f;
+	} else if (state == CubeState::Turret) {
+		return 0.7f;
 	}
 
 	GLfloat y = minVal + (rand() / (RAND_MAX / (maxVal - minVal)));
