@@ -29,7 +29,7 @@ Game SpaceRam(SCREEN_WIDTH, SCREEN_HEIGHT);
 // BG color
 const glm::vec4 BG_COLOR(0.1f, 0.1f, 0.15f, 1.0f);
 
-int main(int argc, char *argv[]) {
+int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -117,7 +117,7 @@ void mousekey_callback(GLFWwindow* window, int button, int action, int mods) {
 		GLdouble yPos;
 		glfwGetCursorPos(window, &xPos, &yPos);
 		if (xPos && yPos) {
-			SpaceRam.HandleClick(GLFW_MOUSE_BUTTON_LEFT, glm::vec2(xPos, yPos));
+			SpaceRam.HandleClick(GLFW_MOUSE_BUTTON_LEFT, xPos, yPos);
 		}
 		SpaceRam.MouseHeld = true;
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {

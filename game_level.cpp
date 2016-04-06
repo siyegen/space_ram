@@ -8,13 +8,11 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 	LevelName = name;
 	Width = width;
 	Height = height;
-	int numberOfCubes = Width*Height;
+	ExpectedNumberOfCubes = Width*Height;
 	srand(static_cast <unsigned> (time(0)));
 	CenterPoint = glm::vec3((Width/2)-0.5f, 0.5f, (Height/2-0.5f));
 
-
-	LevelCubes.reserve(numberOfCubes);
-	std::cout << "numcubes: " << numberOfCubes << std::endl;
+	LevelCubes.reserve(ExpectedNumberOfCubes);
 	fromFile(file, width, height, firstRenderer, effectRenderer);
 }
 
@@ -30,11 +28,27 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	}
 }
 
+Cube* GameLevel::CubeFromPosition(glm::vec2 position) {
+	int xCoord = (int)position.x;
+	int yCoord = (int)position.y*-1; // Adjust for -z going out from camera
+	// Since x and y are multiplied together to get the
+	// index in the vector negative numbers aren't used.
+	if (xCoord < 0 || yCoord < 0) {
+		return nullptr;
+	}
+
+	int index = (yCoord * Width) + xCoord;
+	if (index >= 0 && index < LevelCubes.size()) {
+		return &LevelCubes[index];
+	}
+	return nullptr;
+}
+
 void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect) {
 	LevelCubes.clear();
 	std::string line;
 	std::ifstream levelFile;
-	// Apparently don't set failbit as getline reading an empty newline (as last line)
+	// Apparently don't set failbit as getline reading an empty newline at eof
 	// raises both an eof and failbit and crashes...
 	levelFile.exceptions(std::ifstream::badbit);
 
@@ -49,7 +63,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	try {
 		levelFile.open(file);
 		if (!levelFile) {
-			throw std::exception("Can't find file");
+			throw std::runtime_error("Can't find file");
 		}
 		while (std::getline(levelFile, line)) {
 			// init default colors
@@ -60,7 +74,6 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 			for (auto &tile : line) {
 				int t = tile - '0'; // ascii code to int, has to be a better way
 				CubeState state = GameLevel::getState(t);
-				std::cout << "tile " << t << std::endl;
 				GLfloat x = 1.0f * i++;
 				GLfloat z = -1.0f * j;
 				GLfloat y = GameLevel::getHeight(state, -0.1f, 0.65f);
@@ -96,9 +109,13 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 		}
 	} catch (std::exception e) {
 		std::cout << "ERROR::LEVEL::LOAD " << std::string(e.what()) << std::endl;
-		//exit(-1);
 	}
-
+	if (LevelCubes.size() != ExpectedNumberOfCubes) {
+		std::cout << "WARN::LEVEL::LOAD level size and file mismatch" << std::endl;
+	}
+	if (j != height) {
+		std::cout << "WARN::LEVEL::LOAD level height and file mismatch" << std::endl;
+	}
 	levelFile.close();
 }
 

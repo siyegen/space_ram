@@ -16,7 +16,6 @@
 #include "game_object.h"
 #include "game_level.h"
 
-
 enum class GameState {
 	ACTIVE,
 	MENU,
@@ -44,10 +43,11 @@ public:
 	void Init();
 	// GameLoop
 	void ProcessInput(GLfloat dt);
-	void HandleClick(GLuint button, glm::vec2 position);
-	void MoveCursor(glm::vec2 position);
+	void HandleClick(GLuint button, double xPos, double yPos);
 	void MoveCursor(double xPos, double yPos);
 	void Update(GLfloat dt);
 	void Render();
+private:
+	glm::vec3 screenToWorld(double xPos, double yPos);
 };
 #endif

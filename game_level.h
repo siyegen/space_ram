@@ -42,6 +42,8 @@ public:
 	GLuint Width, Height;
 	std::string LevelName; // For rendering
 
+	unsigned int ExpectedNumberOfCubes = 0;
+
 	glm::vec3 CenterPoint;
 
 	std::vector<Cube> LevelCubes;
@@ -53,7 +55,11 @@ public:
 	// This is ugly, but not sure how else to do it atm.
 	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer);
 
-	void Draw(glm::mat4 camera, LightSource *lightSource); // Cube will draw
+	void Draw(glm::mat4 camera, LightSource *lightSource);
+	// Takes float x/y position and finds the Cube that contains that
+	// Or nullptr if none.
+	// Other options: pass in out ref, or return Nonetype cube;
+	Cube* CubeFromPosition(glm::vec2 position);
 
 private:
 	void fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect);
