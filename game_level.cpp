@@ -24,8 +24,8 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	}
 
 	for (auto &cube : Turrets) {
-		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource);
-		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor);
+		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource, nullptr, false);
+		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor, false);
 	}
 }
 
