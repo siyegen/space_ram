@@ -22,41 +22,44 @@ void Camera::Update(GLfloat dt) {
 
 void Camera::RotateRight() {
 	std::cout << "Right" << std::endl;
-	GLfloat moveXBy = 0.0f;
-	GLfloat moveZby = 0.0f;
-	if (CameraPanState == PanState::Center) {
-		moveXBy = Radius;
-		moveZby = ZRadius;
-		Yaw = -155.0f;
-		CameraPanState = PanState::Right;
-	} else if (CameraPanState == PanState::Left) {
-		moveXBy = Radius;
-		moveZby = -ZRadius;
-		Yaw = -90.0f;
-		CameraPanState = PanState::Center;
-	}
-	Position.x += moveXBy;
-	Position.z -= moveZby;
-	updateCameraVectors();
+	Rotate(PanState::Right);
 }
 
 void Camera::RotateLeft() {
 	std::cout << "Left" << std::endl;
-	GLfloat moveXBy = 0.0f;
-	GLfloat moveZby = 0.0f;
-	if (CameraPanState == PanState::Center) {
-		moveXBy = Radius;
-		moveZby = ZRadius;
-		Yaw = -25.0f;
-		CameraPanState = PanState::Left;
-	} else if (CameraPanState == PanState::Right) {
-		moveXBy = Radius;
-		moveZby = -ZRadius;
-		Yaw = -90.0f;
-		CameraPanState = PanState::Center;
+	Rotate(PanState::Left);
+}
+
+void Camera::Rotate(PanState moveTo) {
+	switch (CurrentPanState) {
+	case PanState::Center:
+		if (moveTo == PanState::Left) {
+			Position = Position + glm::vec3(-Radius, 0.0f, -ZRadius);
+			Yaw = LeftYaw;
+			CurrentPanState = PanState::Left;
+		} else {
+			Position = Position + glm::vec3(Radius, 0.0f, -ZRadius);
+			Yaw = RightYaw;
+			CurrentPanState = PanState::Right;
+		}
+		break;
+	case PanState::Left:
+		if (moveTo == PanState::Right) {
+			Position = Position + glm::vec3(Radius, 0.0f, ZRadius);
+			Yaw = YAW;
+			CurrentPanState = PanState::Center;
+		}
+		break;
+	case PanState::Right:
+		if (moveTo == PanState::Left) {
+			Position = Position + glm::vec3(-Radius, 0.0f, ZRadius);
+			Yaw = YAW;
+			CurrentPanState = PanState::Center;
+		}
+		break;
+	default:
+		break;
 	}
-	Position.x -= moveXBy;
-	Position.z -= moveZby;
 	updateCameraVectors();
 }
 
@@ -71,4 +74,5 @@ void Camera::updateCameraVectors() {
 	Right = glm::normalize(glm::cross(Front, WorldUp));
 	Up = glm::normalize(glm::cross(Right, Front));
 }
+
 

@@ -24,8 +24,8 @@ const GLfloat SPEED = 7.0f;
 const GLfloat SENSITIVTY = 0.25f;
 const GLfloat ZOOM = 45.0f;
 
-const GLfloat RightYaw = 0.0f;
-const GLfloat LeftYaw = 0.0f;
+const GLfloat RightYaw = -155.0f;;
+const GLfloat LeftYaw = -25.0f;
 
 enum class PanState {
 	Center,
@@ -45,7 +45,7 @@ public:
 
 	GLfloat Radius, ZRadius;
 
-	PanState CameraPanState = PanState::Center;
+	PanState CurrentPanState = PanState::Center;
 
 	// Eular Angles
 	GLfloat Yaw;
@@ -68,8 +68,5 @@ public:
 
 private:
 	void updateCameraVectors();
+	void Rotate(PanState moveTo);
 };
-
-//GLfloat radius = 10.0f;
-//GLfloat camX = sin(glfwGetTime()) * radius;
-//GLfloat camZ = cos(glfwGetTime()) * radius;
