@@ -1,8 +1,5 @@
 #include "game_object.h"
 
-GameObject::GameObject() {
-}
-
 GameObject::GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation) : IsAlive(GL_TRUE) {
 	Position = pos;
 	Size = size;

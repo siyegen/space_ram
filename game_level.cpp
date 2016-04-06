@@ -22,6 +22,11 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource);
 		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor);
 	}
+
+	for (auto &cube : Turrets) {
+		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource);
+		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor);
+	}
 }
 
 void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Renderer *first, Renderer *effect) {
@@ -37,6 +42,9 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
 	glm::vec4 normalOutline(0.2f, 0.7f, 0.2f, 0.7f);
 	glm::vec4 waterOutline(0.0f, 0.4f, 0.9f, 0.7f);
+
+	glm::vec3 turretColor(1.0f, 0.31f, 0.31f);
+	glm::vec4 turretOutline(0.7f, 0.2f, 0.0f, 0.7f);
 	try {
 		levelFile.open(file);
 		while (std::getline(levelFile, line)) {
@@ -52,18 +60,32 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 				GLfloat z = -1.0f * j;
 				GLfloat y = GameLevel::getHeight(state, -0.1f, 0.65f);
 
-				if (state == CubeState::Normal) {
+				switch (state) {
+				case CubeState::Normal:
 					colorPointer = GameLevel::randomGroundColor();
-					// colorPointer = &normalColor;
 					outlinePointer = &normalOutline;
-				} else if (state == CubeState::Water) {
+					break;
+				case CubeState::Dangerous:
+					break;
+				case CubeState::Water:
 					colorPointer = &waterColor;
 					outlinePointer = &waterOutline;
-				} else {
+					break;
+				case CubeState::Turret:
+					colorPointer = &turretColor;
+					outlinePointer = &turretOutline;
+					break;
+				default:
 					colorPointer = &normalColor;
+					outlinePointer = &normalOutline;
+					break;
 				}
 				GameObject obj(glm::vec3(x, y, z), glm::vec3(), *colorPointer, 0.0f);
 				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
+				if (state == CubeState::Turret) {
+					GameObject obj(glm::vec3(x, y+1.0f, z), glm::vec3(), *colorPointer, 0.0f);
+					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
+				}
 			}
 			j++; i = 0;
 		}

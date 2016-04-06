@@ -45,6 +45,7 @@ public:
 	glm::vec3 CenterPoint;
 
 	std::vector<Cube> LevelCubes;
+	std::vector<Cube> Turrets;
 
 	// This is ugly, but not sure how else to do it atm.
 	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer);
