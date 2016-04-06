@@ -25,6 +25,7 @@ enum class CubeState {
 	Normal,
 	Dangerous,
 	Water,
+	Turret,
 };
 
 struct Cube {

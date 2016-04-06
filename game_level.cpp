@@ -87,6 +87,9 @@ CubeState GameLevel::getState(GLuint tile) {
 	case 3:
 		state = CubeState::Dangerous;
 		break;
+	case 4:
+		state = CubeState::Turret;
+		break;
 	default:
 		break;
 	}
