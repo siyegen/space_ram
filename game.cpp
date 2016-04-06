@@ -85,7 +85,7 @@ void Game::Init() {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	GameLevel testLevel("testLevel", "levels/level_one.txt", 6, 4, cubeRenderer, outlineRenderer);
+	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel);
 }
 
