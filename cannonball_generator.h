@@ -29,7 +29,7 @@ public:
 
 	void Update(GLfloat dt);
 	void Draw(glm::mat4 camera, LightSource *lightSource);
-	void Fire(GLuint amount, glm::vec3 origin);
+	void Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target);
 private:
 	std::vector<CannonBall> cannonBalls;
 	Renderer *cannonBallRenderer;

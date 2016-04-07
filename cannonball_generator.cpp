@@ -17,7 +17,7 @@ CannonBallGenerator::CannonBallGenerator(Renderer *renderer, GLuint amount) {
 void CannonBallGenerator::Update(GLfloat dt) {
 	for (auto &ball : cannonBalls) {
 		if (ball.IsActive) {
-			ball.Velocity -= glm::vec3(0.0f, 7.0f, 0.0f)*dt;
+			ball.Velocity -= glm::vec3(0.0f, 10.0f, 0.0f)*dt;
 			ball.CubeObj.Position += ball.Velocity*dt;
 			if (ball.CubeObj.Position.y < -2.0f) {
 				ball.IsActive = false;
@@ -31,19 +31,20 @@ void CannonBallGenerator::Draw(glm::mat4 camera, LightSource *lightSource) {
 		// update / set color here
 		// call draw, go to next
 		if (ball.IsActive) {
-			ball.CubeObj.Draw(*cannonBallRenderer, camera, lightSource);
+			ball.CubeObj.Draw(*cannonBallRenderer, camera, lightSource, nullptr, false);
 		}
 	}
 }
 
-void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin) {
+void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target) {
 	// For now only fire 1
 	std::cout << "Firing! ";
 	amount = 1;
 	CannonBall &current = cannonBalls[getFirstReadyCannonBall()];
 	resetCannonBall(current, origin);
+	current.CubeObj.Rotation = 75.0f;
 	std::cout << "from " << current.CubeObj.Position.x << std::endl;
-	std::cout << "active? " << current.IsActive << std::endl;
+	std::cout << "active? " << launchRotation << std::endl;
 }
 
 GLuint CannonBallGenerator::getFirstReadyCannonBall() {
