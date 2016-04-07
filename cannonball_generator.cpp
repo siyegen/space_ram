@@ -45,6 +45,13 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	current.CubeObj.Rotation = 75.0f;
 	std::cout << "from " << current.CubeObj.Position.x << std::endl;
 	std::cout << "active? " << launchRotation << std::endl;
+
+	GLfloat g = 10.0f;
+	GLfloat v = 20.0f;
+	GLfloat d = target.z - origin.z; // dist out
+	GLfloat angle = 0.5f * asin((g*d)/pow(v,2));
+	std::cout << "angle " << angle << std::endl;
+	//current.Velocity = glm::vec3(0.0f, 20.0f*glm::sin(glm::radians(angle)), -20.0f*glm::cos(glm::radians(angle)));
 }
 
 GLuint CannonBallGenerator::getFirstReadyCannonBall() {

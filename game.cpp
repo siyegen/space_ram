@@ -108,7 +108,7 @@ void Game::Update(GLfloat dt) {
 		glm::vec2 target(level.Target.x, level.Target.y);
 		// adjust for origin position, move to render function
 		for (auto &turret : level.Turrets) {
-			glm::vec2 turretVec(turret.CubeObj.Position.x - 0.5f, turret.CubeObj.Position.z - 0.5f);
+			glm::vec2 turretVec(turret.CubeObj.Position.x+0.5f, turret.CubeObj.Position.z - 0.5f);
 			glm::vec2 facing = turretVec - target;
 			GLfloat angle = atan2(facing.y, facing.x);
 			turret.CubeObj.Rotation = glm::degrees(-angle);
