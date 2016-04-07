@@ -16,7 +16,8 @@ public:
 	Renderer(Shader shader, const std::vector<GLfloat> verticies);
 	~Renderer();
 
-	void Draw(glm::mat4 view, glm::vec3 position, GLfloat *rotation=nullptr);
+	// Uniform scaling only
+	void Draw(glm::mat4 view, glm::vec3 position, GLfloat *scale=nullptr, GLfloat *rotation=nullptr);
 	// Expose shader to pass uniforms in
 	Shader shader;
 private:

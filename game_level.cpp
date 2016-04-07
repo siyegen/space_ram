@@ -98,10 +98,10 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 					outlinePointer = &normalOutline;
 					break;
 				}
-				GameObject obj(glm::vec3(x, y, z), glm::vec3(), *colorPointer, 0.0f);
+				GameObject obj(glm::vec3(x, y, z), 1.0f, *colorPointer, 0.0f);
 				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
 				if (state == CubeState::Turret) {
-					GameObject obj(glm::vec3(x, y+1.0f, z), glm::vec3(), *colorPointer, 0.0f);
+					GameObject obj(glm::vec3(x, y+1.0f, z), 1.0f, *colorPointer, 0.0f);
 					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
 				}
 			}

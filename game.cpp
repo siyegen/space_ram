@@ -5,6 +5,7 @@
 Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
+LightSource *cannonBallSource;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -15,6 +16,8 @@ Game::~Game() {
 	delete cubeRenderer;
 	delete outlineRenderer;
 	delete lightSource;
+	delete cannonBallSource;
+	delete Cannon;
 }
 
 void Game::Init() {
@@ -74,6 +77,12 @@ void Game::Init() {
 		//glm::vec3((6 / 2), 10.0f, -3.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
+	// Need to adjust for level
+	cannonBallSource = new LightSource{
+		glm::vec3((24 / 2) - 0.5f, 30.0f, -10.0f),
+		//glm::vec3((6 / 2), 10.0f, -3.0f),
+		glm::vec3(1.0f, 0.2f, 0.0f),
+	};
 
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
@@ -87,6 +96,9 @@ void Game::Init() {
 
 	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel);
+
+	// Ready cannon balls
+	Cannon = new CannonBallGenerator(cubeRenderer, 100);
 }
 
 void Game::Update(GLfloat dt) {
@@ -102,10 +114,12 @@ void Game::Update(GLfloat dt) {
 			turret.CubeObj.Rotation = glm::degrees(-angle);
 		}
 	}
+	Cannon->Update(dt);
 }
 
 void Game::Render() {
 	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
+	Cannon->Draw(GameCamera.GetViewMatrix(), cannonBallSource);
 }
 
 void Game::ProcessInput(GLfloat dt) {
@@ -128,6 +142,7 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 		Cube *cubeTarget = level.CubeFromPosition(levelXY);
 		if (cubeTarget && cubeTarget->State != CubeState::Turret) {
 			cubeTarget->CubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
+			Cannon->Fire(1, level.Turrets[firingFrom++%level.Turrets.size()].CubeObj.Position);
 		}
 	}
 }

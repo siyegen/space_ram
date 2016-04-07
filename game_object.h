@@ -15,13 +15,14 @@ struct LightSource {
 
 class GameObject {
 public:
-  glm::vec3 Position, Size, Color;
+  glm::vec3 Position, Color;
 
   GLfloat Rotation = 0.0f;
+  GLfloat Scale = 1.0f;
   GLboolean IsAlive;
 
   GameObject();
-  GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation);
+  GameObject(glm::vec3 pos, GLfloat scale, glm::vec3 color, GLfloat rotation);
 
   // light is optional
   void Draw(Renderer &renderer, glm::mat4 camera, const LightSource *lightSource=nullptr, const glm::vec4 *outlineColor=nullptr, bool skipRot=true);

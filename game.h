@@ -15,6 +15,7 @@
 #include "renderer.h"
 #include "game_object.h"
 #include "game_level.h"
+#include "cannonball_generator.h"
 
 enum class GameState {
 	ACTIVE,
@@ -29,8 +30,12 @@ public:
 	GLboolean  Keys[1024];
 	GLuint	   Width, Height;
 
+	GLuint firingFrom = 0;
+
 	std::vector<GameLevel> Levels;
 	GLuint CurrentLevel = 0;
+
+	CannonBallGenerator *Cannon = nullptr;
 
 	Camera GameCamera;
 

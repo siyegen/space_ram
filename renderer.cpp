@@ -13,13 +13,16 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &VAO);
 }
 
-void Renderer::Draw(glm::mat4 view, glm::vec3 position, GLfloat *rotation) {
+void Renderer::Draw(glm::mat4 view, glm::vec3 position, GLfloat *scale, GLfloat *rotation) {
 	shader.Use();
 
 	glm::mat4 model;
 	model = glm::translate(model, position + glm::vec3(0.5f, 0.0f, -0.5f));
 	if (rotation)
 		model = glm::rotate(model, glm::radians(*rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	if (scale)
+		model = glm::scale(model, glm::vec3(*scale, *scale, *scale));
 
 	shader.SetMatrix4("view", view);
 	shader.SetMatrix4("model", model);

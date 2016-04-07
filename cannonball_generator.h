@@ -4,6 +4,8 @@
 #define CANONBALLGENERATOR_H
 
 #include <vector>
+#include <ctime>
+#include <random>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -14,9 +16,10 @@
 
 struct CannonBall {
 	GameObject CubeObj;
-	GLboolean IsActive;
+	glm::vec3 Velocity;
+	bool IsActive;
 
-	CannonBall() : CubeObj(), IsActive() {};
+	CannonBall() : CubeObj(), IsActive(false) {};
 };
 
 class CannonBallGenerator {
@@ -25,17 +28,16 @@ public:
 	CannonBallGenerator(Renderer *renderer, GLuint amount);
 
 	void Update(GLfloat dt);
-	void Draw(glm::mat4 camera);
+	void Draw(glm::mat4 camera, LightSource *lightSource);
 	void Fire(GLuint amount, glm::vec3 origin);
 private:
 	std::vector<CannonBall> cannonBalls;
 	Renderer *cannonBallRenderer;
 	GLuint totalSize;
+	GLuint currentIndex = 0;
 
 	GLuint getFirstReadyCannonBall();
-	void resetCannonBall();
-
-	void init();
+	void resetCannonBall(CannonBall &cannonball, glm::vec3 position);
 };
 
 #endif // !CANONBALLGENERATOR_H

@@ -1,12 +1,12 @@
 #include "game_object.h"
 
 
-GameObject::GameObject() : Position(), Size(), Color(1.0f, 0.5f, 0.0f), Rotation() {
+GameObject::GameObject() : Position(), Scale(1.0f), Color(1.0f, 0.5f, 0.0f), Rotation() {
 }
 
-GameObject::GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation) : IsAlive(GL_TRUE) {
+GameObject::GameObject(glm::vec3 pos, GLfloat scale, glm::vec3 color, GLfloat rotation) : IsAlive(GL_TRUE) {
 	Position = pos;
-	Size = size;
+	Scale = scale;
 	Color = color;
 }
 
@@ -21,9 +21,9 @@ void GameObject::Draw(Renderer &renderer, glm::mat4 camera, const LightSource *l
 		currentShader.SetVector4f("outlineColor", *outlineColor);
 	}
 	if (skipRot) {
-		renderer.Draw(camera, Position);
+		renderer.Draw(camera, Position, &Scale);
 	} else {
-		renderer.Draw(camera, Position, &Rotation);
+		renderer.Draw(camera, Position, &Scale, &Rotation);
 	}
 }
 
