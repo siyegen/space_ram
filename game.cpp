@@ -5,7 +5,7 @@
 Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
-LightSource *cannonBallSource;
+LightSource *cannonballLight;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -16,7 +16,7 @@ Game::~Game() {
 	delete cubeRenderer;
 	delete outlineRenderer;
 	delete lightSource;
-	delete cannonBallSource;
+	delete cannonballLight;
 	delete Cannon;
 }
 
@@ -78,7 +78,7 @@ void Game::Init() {
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
 	// Need to adjust for level
-	cannonBallSource = new LightSource{
+	cannonballLight = new LightSource{
 		glm::vec3((24 / 2) - 0.5f, 30.0f, -10.0f),
 		//glm::vec3((6 / 2), 10.0f, -3.0f),
 		glm::vec3(1.0f, 0.2f, 0.0f),
@@ -94,11 +94,12 @@ void Game::Init() {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	GameLevel testLevel("testLevel", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
+	GameLevel testLevel("testLevel", "levels/level_two.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel);
 
 	// Ready cannon balls
 	Cannon = new CannonBallGenerator(cubeRenderer, 100);
+	std::cout << "starting angle: " << testLevel.Turrets[0].CubeObj.Rotation << std::endl;
 }
 
 void Game::Update(GLfloat dt) {
@@ -110,7 +111,7 @@ void Game::Update(GLfloat dt) {
 		for (auto &turret : level.Turrets) {
 			glm::vec2 turretVec(turret.CubeObj.Position.x+0.5f, turret.CubeObj.Position.z - 0.5f);
 			glm::vec2 facing = turretVec - target;
-			GLfloat angle = atan2(facing.y, facing.x);
+			GLfloat angle = glm::atan(facing.y, facing.x);
 			turret.CubeObj.Rotation = glm::degrees(-angle);
 		}
 	}
@@ -119,7 +120,7 @@ void Game::Update(GLfloat dt) {
 
 void Game::Render() {
 	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
-	Cannon->Draw(GameCamera.GetViewMatrix(), cannonBallSource);
+	Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
 }
 
 void Game::ProcessInput(GLfloat dt) {
