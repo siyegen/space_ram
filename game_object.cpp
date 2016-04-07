@@ -1,6 +1,9 @@
 #include "game_object.h"
 
-#include <iostream>
+
+GameObject::GameObject() : Position(), Size(), Color(1.0f, 0.5f, 0.0f), Rotation() {
+}
+
 GameObject::GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation) : IsAlive(GL_TRUE) {
 	Position = pos;
 	Size = size;

@@ -18,13 +18,13 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 
 void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	for (auto &cube : LevelCubes) {
-		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource);
-		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor);
+		cube.CubeObj.Draw(cube.MainRenderer, camera, lightSource);
+		cube.CubeObj.Draw(cube.OutlineRenderer, camera, lightSource, &cube.OutlineColor);
 	}
 
 	for (auto &cube : Turrets) {
-		cube.cubeObj.Draw(cube.mainRenderer, camera, lightSource, nullptr, false);
-		cube.cubeObj.Draw(cube.outlineRenderer, camera, lightSource, &cube.outlineColor, false);
+		cube.CubeObj.Draw(cube.MainRenderer, camera, lightSource, nullptr, false);
+		cube.CubeObj.Draw(cube.OutlineRenderer, camera, lightSource, &cube.OutlineColor, false);
 	}
 }
 

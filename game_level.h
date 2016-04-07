@@ -12,6 +12,7 @@
 #include "game_object.h"
 #include "renderer.h"
 
+
 const int NumberOfGroundColors = 4;
 
 const glm::vec3 GroundColors[NumberOfGroundColors] {
@@ -29,12 +30,12 @@ enum class CubeState {
 };
 
 struct Cube {
-	Renderer &mainRenderer;
-	Renderer &outlineRenderer;
-	GameObject cubeObj;
-	CubeState state;
-	glm::vec2 coords; // row/col values
-	glm::vec4 outlineColor;
+	Renderer &MainRenderer;
+	Renderer &OutlineRenderer;
+	GameObject CubeObj;
+	CubeState State;
+	glm::vec2 Coords; // row/col values
+	glm::vec4 OutlineColor;
 };
 
 class GameLevel {

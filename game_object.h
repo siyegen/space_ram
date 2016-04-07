@@ -20,6 +20,7 @@ public:
   GLfloat Rotation = 0.0f;
   GLboolean IsAlive;
 
+  GameObject();
   GameObject(glm::vec3 pos, glm::vec3 size, glm::vec3 color, GLfloat rotation);
 
   // light is optional

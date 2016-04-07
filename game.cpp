@@ -96,10 +96,10 @@ void Game::Update(GLfloat dt) {
 		glm::vec2 target(level.Target.x, level.Target.y);
 		// adjust for origin position, move to render function
 		for (auto &turret : level.Turrets) {
-			glm::vec2 turretVec(turret.cubeObj.Position.x - 0.5f, turret.cubeObj.Position.z - 0.5f);
+			glm::vec2 turretVec(turret.CubeObj.Position.x - 0.5f, turret.CubeObj.Position.z - 0.5f);
 			glm::vec2 facing = turretVec - target;
 			GLfloat angle = atan2(facing.y, facing.x);
-			turret.cubeObj.Rotation = glm::degrees(-angle);
+			turret.CubeObj.Rotation = glm::degrees(-angle);
 		}
 	}
 }
@@ -126,8 +126,8 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 		glm::vec3 world = screenToWorld(xPos, yPos);
 		glm::vec2 levelXY = glm::vec2(world.x, world.z);
 		Cube *cubeTarget = level.CubeFromPosition(levelXY);
-		if (cubeTarget) {
-			cubeTarget->cubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
+		if (cubeTarget && cubeTarget->State != CubeState::Turret) {
+			cubeTarget->CubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
 		}
 	}
 }
@@ -149,8 +149,8 @@ glm::vec3 Game::screenToWorld(double xPos, double yPos) {
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
 	glm::mat4 modelView = GameCamera.GetViewMatrix()*glm::mat4(0.5f);
 	glm::vec4 viewport(0, 0, Width, Height);
-	GLfloat winX =xPos;
-	GLfloat winY = Height - yPos;
+	GLfloat winX = (GLfloat)xPos;
+	GLfloat winY = (GLfloat)(Height - yPos);
 	GLfloat winZ;
 	glReadPixels((int)winX, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 	return glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport);
