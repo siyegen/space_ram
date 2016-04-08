@@ -93,10 +93,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="levels\level_one.txt">
+    <Text Include="level_test.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="level_test.txt">
+    <Text Include="levels\level_one.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="levels\level_two.txt">

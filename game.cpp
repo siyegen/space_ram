@@ -160,10 +160,9 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		GameLevel &level = Levels[CurrentLevel];
 		glm::vec3 world = screenToWorld(xPos, yPos);
-		std::cout << "x: " << world.x << " y: " << world.y << " z: " << world.z << std::endl;
 		glm::vec2 levelXY = glm::vec2(world.x, world.z);
 		Cube *cubeTarget = level.CubeFromPosition(levelXY);
-		if (cubeTarget && cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy) {
+		if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
 			cubeTarget->CubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
 			Cube turret = level.Turrets[firingFrom++%level.Turrets.size()];
 			Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);

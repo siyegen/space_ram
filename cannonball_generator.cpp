@@ -66,8 +66,9 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 
 bool CannonBallGenerator::CheckCollision(const Cube &target) {
 	for (auto &ball : cannonBalls) {
-		GLfloat dist = glm::abs(target.CubeObj.Position.x - ball.CubeObj.Position.x);
-		if (ball.IsActive && (ball.CubeObj.Position.y <= 3.5f || dist <= 2.0f)) { // small filter
+		glm::vec3 fireLine = target.CubeObj.Position - ball.CubeObj.Position;
+		GLfloat dist = glm::abs(glm::sqrt(fireLine.x * fireLine.x + fireLine.z * fireLine.z));
+		if (ball.IsActive && dist <= 2.0f) { // small filter
 			std::cout << "checking collision" << std::endl;
 			glm::vec3 tPos = target.CubeObj.Position;
 			glm::vec3 bPos = ball.CubeObj.Position;

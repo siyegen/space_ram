@@ -146,8 +146,8 @@
     <None Include="shaders\simple3d.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="levels\level_one.txt" />
     <Text Include="levels\level_two.txt" />
+    <Text Include="levels\level_one.txt" />
     <Text Include="level_test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
