@@ -69,7 +69,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	glm::vec4 turretOutline(0.7f, 0.2f, 0.0f, 0.7f);
 
 	glm::vec3 enemyColor(0.31f, 0.31f, 0.31f);
-	glm::vec4 enemyOutline(1.0f, 0.2f, 0.0f, 0.7f);
+	glm::vec4 enemyOutline(1.0f, 0.21f, 0.1f, 0.8f);
 	try {
 		levelFile.open(file);
 		if (!levelFile) {

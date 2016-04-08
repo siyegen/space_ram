@@ -19,7 +19,7 @@ void CannonBallGenerator::Update(GLfloat dt) {
 		if (ball.IsActive) {
 			ball.Velocity -= ball.Grav*dt;
 			ball.CubeObj.Position += ball.Velocity*dt;
-			if (ball.CubeObj.Position.y < -2.0f) {
+			if (ball.CubeObj.Position.y < -0.1f) {
 				ball.IsActive = false;
 				std::cout << "killed ball" << std::endl;
 			}
