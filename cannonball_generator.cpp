@@ -17,10 +17,11 @@ CannonBallGenerator::CannonBallGenerator(Renderer *renderer, GLuint amount) {
 void CannonBallGenerator::Update(GLfloat dt) {
 	for (auto &ball : cannonBalls) {
 		if (ball.IsActive) {
-			ball.Velocity -= glm::vec3(0.0f, 10.0f, 0.0f)*dt;
+			ball.Velocity -= ball.Grav*dt;
 			ball.CubeObj.Position += ball.Velocity*dt;
 			if (ball.CubeObj.Position.y < -2.0f) {
 				ball.IsActive = false;
+				std::cout << "killed ball" << std::endl;
 			}
 		}
 	}
@@ -42,18 +43,25 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	amount = 1;
 	CannonBall &current = cannonBalls[getFirstReadyCannonBall()];
 	resetCannonBall(current, origin);
-	current.CubeObj.Rotation = 75.0f;
+	current.CubeObj.Rotation = launchRotation;
 	std::cout << "from " << current.CubeObj.Position.x << std::endl;
 	std::cout << "launchRotation " << launchRotation << std::endl;
 
-	GLfloat v = 20.0f;
-	GLfloat yAngle = glm::radians(45.0f);
-	GLfloat xzAngle = glm::radians(launchRotation+180.0f);
-	GLfloat x = v * cos(xzAngle);
-	GLfloat y = 10.0f;
-	GLfloat z = v * sin(xzAngle);
-	std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-	current.Velocity = glm::vec3(x, y, -z);
+	glm::vec3 fireVector = target - origin;
+	GLfloat dist = glm::sqrt(fireVector.x * fireVector.x + fireVector.z * fireVector.z);
+	fireVector = glm::normalize(fireVector);
+	fireVector.y = glm::radians(45.0f);
+	fireVector *= 12.0f; // Speed
+
+	GLfloat vx = glm::sqrt(fireVector.x*fireVector.x + fireVector.z *fireVector.z);
+	GLfloat vy = fireVector.y;
+
+	GLfloat t = dist / vx;
+	GLfloat y = target.y - origin.y;
+	GLfloat g = (2.0f * (y - vy *t)) / (t*t);
+
+	current.Velocity = fireVector;
+	current.Grav = glm::vec3(0.0f, -g, 0.0f);
 }
 
 GLuint CannonBallGenerator::getFirstReadyCannonBall() {

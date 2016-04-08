@@ -17,6 +17,7 @@
 struct CannonBall {
 	GameObject CubeObj;
 	glm::vec3 Velocity;
+	glm::vec3 Grav;
 	bool IsActive;
 
 	CannonBall() : CubeObj(), IsActive(false) {};
