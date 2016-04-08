@@ -50,8 +50,8 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	glm::vec3 fireVector = target - origin;
 	GLfloat dist = glm::sqrt(fireVector.x * fireVector.x + fireVector.z * fireVector.z);
 	fireVector = glm::normalize(fireVector);
-	fireVector.y = glm::radians(68.0f);
-	fireVector *= 4.0f; // Speed
+	fireVector.y = glm::radians(78.0f);
+	fireVector *= 7.0f; // Speed
 
 	GLfloat vx = glm::sqrt(fireVector.x*fireVector.x + fireVector.z *fireVector.z);
 	GLfloat vy = fireVector.y;
