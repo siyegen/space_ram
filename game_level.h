@@ -24,7 +24,7 @@ const glm::vec3 GroundColors[NumberOfGroundColors] {
 
 enum class CubeState {
 	Normal,
-	Dangerous,
+	Enemy,
 	Water,
 	Turret,
 };
@@ -36,6 +36,7 @@ struct Cube {
 	CubeState State;
 	glm::vec2 Coords; // row/col values
 	glm::vec4 OutlineColor;
+	bool IsAlive; // Leaky, most cubes don't care about this
 };
 
 class GameLevel {
@@ -49,6 +50,9 @@ public:
 
 	std::vector<Cube> LevelCubes;
 	std::vector<Cube> Turrets;
+	std::vector<Cube> Enemies;
+
+	unsigned int NumberKilled = 0;
 
 	glm::vec2 Target;
 	bool HasTarget = false;

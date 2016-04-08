@@ -104,6 +104,9 @@ void Game::Init() {
 
 void Game::Update(GLfloat dt) {
 	GameLevel &level = Levels[CurrentLevel];
+	if (level.NumberKilled == level.Enemies.size()) {
+		std::cout << "You win!" << std::endl;
+	}
 	if (level.HasTarget) {
 		// find angle from turret to target, rotate towards
 		glm::vec2 target(level.Target.x, level.Target.y);
@@ -116,6 +119,24 @@ void Game::Update(GLfloat dt) {
 		}
 	}
 	Cannon->Update(dt);
+	CheckHit();
+}
+
+bool Game::CheckHit() {
+	// Loop over all hittable items on the level
+	// pass to cannon to check if any valid balls
+	// have colided with it.
+	GameLevel &level = Levels[CurrentLevel];
+	for (auto &enemy : level.Enemies) {
+		if (enemy.IsAlive) {
+			if (Cannon->CheckCollision(enemy)) {
+				enemy.IsAlive = false;
+				level.NumberKilled++;
+				std::cout << "Boom, hit!" << std::endl;
+			}
+		}
+	}
+	return false;
 }
 
 void Game::Render() {
@@ -139,9 +160,10 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		GameLevel &level = Levels[CurrentLevel];
 		glm::vec3 world = screenToWorld(xPos, yPos);
+		std::cout << "x: " << world.x << " y: " << world.y << " z: " << world.z << std::endl;
 		glm::vec2 levelXY = glm::vec2(world.x, world.z);
 		Cube *cubeTarget = level.CubeFromPosition(levelXY);
-		if (cubeTarget && cubeTarget->State != CubeState::Turret) {
+		if (cubeTarget && cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy) {
 			cubeTarget->CubeObj.Color = glm::vec3(0.2f, 0.2f, 0.61f);
 			Cube turret = level.Turrets[firingFrom++%level.Turrets.size()];
 			Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);

@@ -52,6 +52,7 @@ public:
 	void MoveCursor(double xPos, double yPos);
 	void Update(GLfloat dt);
 	void Render();
+	bool CheckHit();
 private:
 	glm::vec3 screenToWorld(double xPos, double yPos);
 };

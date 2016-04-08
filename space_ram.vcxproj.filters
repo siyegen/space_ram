@@ -99,5 +99,8 @@
     <Text Include="level_test.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="levels\level_two.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

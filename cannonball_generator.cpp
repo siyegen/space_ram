@@ -44,14 +44,14 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	CannonBall &current = cannonBalls[getFirstReadyCannonBall()];
 	resetCannonBall(current, origin);
 	current.CubeObj.Rotation = launchRotation;
-	std::cout << "from " << current.CubeObj.Position.x << std::endl;
-	std::cout << "launchRotation " << launchRotation << std::endl;
+
+	target = glm::vec3(target.x - 0.5f, target.y, target.z + 0.5f);
 
 	glm::vec3 fireVector = target - origin;
 	GLfloat dist = glm::sqrt(fireVector.x * fireVector.x + fireVector.z * fireVector.z);
 	fireVector = glm::normalize(fireVector);
-	fireVector.y = glm::radians(45.0f);
-	fireVector *= 12.0f; // Speed
+	fireVector.y = glm::radians(68.0f);
+	fireVector *= 4.0f; // Speed
 
 	GLfloat vx = glm::sqrt(fireVector.x*fireVector.x + fireVector.z *fireVector.z);
 	GLfloat vy = fireVector.y;
@@ -62,6 +62,26 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 
 	current.Velocity = fireVector;
 	current.Grav = glm::vec3(0.0f, -g, 0.0f);
+}
+
+bool CannonBallGenerator::CheckCollision(const Cube &target) {
+	for (auto &ball : cannonBalls) {
+		GLfloat dist = glm::abs(target.CubeObj.Position.x - ball.CubeObj.Position.x);
+		if (ball.IsActive && (ball.CubeObj.Position.y <= 3.5f || dist <= 2.0f)) { // small filter
+			std::cout << "checking collision" << std::endl;
+			glm::vec3 tPos = target.CubeObj.Position;
+			glm::vec3 bPos = ball.CubeObj.Position;
+			if (glm::abs(tPos.x - bPos.x) < 0.5f + 0.25f) { // x half size
+				if (glm::abs(tPos.y - bPos.y) < 0.5f + 0.25f) { // y
+					if (glm::abs(tPos.z - bPos.z) < 0.5f + 0.25f) { // z
+						ball.IsActive = false;
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
 
 GLuint CannonBallGenerator::getFirstReadyCannonBall() {

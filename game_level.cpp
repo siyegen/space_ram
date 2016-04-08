@@ -26,6 +26,13 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 		cube.CubeObj.Draw(cube.MainRenderer, camera, lightSource, nullptr, false);
 		cube.CubeObj.Draw(cube.OutlineRenderer, camera, lightSource, &cube.OutlineColor, false);
 	}
+
+	for (auto &cube : Enemies) {
+		if (cube.IsAlive) {
+			cube.CubeObj.Draw(cube.MainRenderer, camera, lightSource, nullptr, false);
+			cube.CubeObj.Draw(cube.OutlineRenderer, camera, lightSource, &cube.OutlineColor, false);
+		}
+	}
 }
 
 Cube* GameLevel::CubeFromPosition(glm::vec2 position) {
@@ -60,6 +67,9 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 
 	glm::vec3 turretColor(1.0f, 0.31f, 0.31f);
 	glm::vec4 turretOutline(0.7f, 0.2f, 0.0f, 0.7f);
+
+	glm::vec3 enemyColor(0.31f, 0.0f, 0.0f);
+	glm::vec4 enemyOutline(1.0f, 0.2f, 0.0f, 0.7f);
 	try {
 		levelFile.open(file);
 		if (!levelFile) {
@@ -83,7 +93,9 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 					colorPointer = GameLevel::randomGroundColor();
 					outlinePointer = &normalOutline;
 					break;
-				case CubeState::Dangerous:
+				case CubeState::Enemy:
+					colorPointer = &normalColor;
+					outlinePointer = &normalOutline;
 					break;
 				case CubeState::Water:
 					colorPointer = &waterColor;
@@ -103,6 +115,9 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 				if (state == CubeState::Turret) {
 					GameObject obj(glm::vec3(x, y+1.0f, z), 1.0f, *colorPointer, 0.0f);
 					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
+				} else if (state == CubeState::Enemy) {
+					GameObject obj(glm::vec3(x, y + 1.0f, z), 1.0f, enemyColor, 0.0f);
+					Enemies.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), enemyOutline, true });
 				}
 			}
 			j++; i = 0;
@@ -129,7 +144,7 @@ CubeState GameLevel::getState(GLuint tile) {
 		state = CubeState::Water;
 		break;
 	case 3:
-		state = CubeState::Dangerous;
+		state = CubeState::Enemy;
 		break;
 	case 4:
 		state = CubeState::Turret;
@@ -141,7 +156,7 @@ CubeState GameLevel::getState(GLuint tile) {
 }
 
 GLfloat GameLevel::getHeight(CubeState state, GLfloat minVal, GLfloat maxVal) {
-	if (state == CubeState::Water) {
+	if (state == CubeState::Water || state == CubeState::Enemy) {
 		return 0.0f;
 	} else if (state == CubeState::Turret) {
 		return 0.7f;
