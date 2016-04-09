@@ -17,6 +17,7 @@
 #include "game_level.h"
 #include "cannonball_generator.h"
 
+
 enum class GameState {
 	ACTIVE,
 	MENU,
@@ -26,11 +27,11 @@ enum class GameState {
 class Game {
 public:
 	// Game state
-	GameState  State;
-	GLboolean  Keys[1024];
-	GLuint	   Width, Height;
+	GameState State;
+	GLboolean Keys[1024];
+	GLuint Width, Height;
 
-	GLuint firingFrom = 0;
+	GLuint FiringFrom = 0;
 
 	std::vector<GameLevel> Levels;
 	GLuint CurrentLevel = 0;
@@ -56,4 +57,5 @@ public:
 private:
 	glm::vec3 screenToWorld(double xPos, double yPos);
 };
+
 #endif

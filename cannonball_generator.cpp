@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+
+const GLfloat LAUNCH_ANGLE = 78.0f;
+const GLfloat LAUNCH_SPEED = 7.0f;
+
 CannonBallGenerator::CannonBallGenerator(Renderer *renderer, GLuint amount) {
 	cannonBallRenderer = renderer;
 	totalSize = amount;
@@ -11,7 +15,7 @@ CannonBallGenerator::CannonBallGenerator(Renderer *renderer, GLuint amount) {
 	for (GLuint i = 0; i < totalSize; i++) {
 		cannonBalls.push_back(CannonBall());
 	}
-	std::cout << "size of balls " << cannonBalls.size() << std::endl;
+	std::cout << "number of balls " << cannonBalls.size() << std::endl;
 }
 
 void CannonBallGenerator::Update(GLfloat dt) {
@@ -36,7 +40,6 @@ void CannonBallGenerator::Draw(glm::mat4 camera, LightSource *lightSource) {
 }
 
 void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target) {
-	std::cout << "Firing! ";
 	amount = 1;
 	CannonBall &current = cannonBalls[getFirstReadyCannonBall()];
 	resetCannonBall(current, origin);
@@ -48,8 +51,8 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	glm::vec3 fireVector = target - origin;
 	GLfloat dist = glm::sqrt(fireVector.x * fireVector.x + fireVector.z * fireVector.z);
 	fireVector = glm::normalize(fireVector);
-	fireVector.y = glm::radians(78.0f);
-	fireVector *= 7.0f; // Speed
+	fireVector.y = glm::radians(LAUNCH_ANGLE);
+	fireVector *= LAUNCH_SPEED; // Speed
 
 	GLfloat vx = glm::sqrt(fireVector.x*fireVector.x + fireVector.z *fireVector.z);
 	GLfloat vy = fireVector.y;
@@ -62,12 +65,12 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 	current.Grav = glm::vec3(0.0f, -g, 0.0f);
 }
 
-bool CannonBallGenerator::CheckCollision(const Cube &target) {
+// This could probably just check against the GameObject the cube contains, minus the
+bool CannonBallGenerator::CheckCollision(const EnemyCube &target) {
 	for (auto &ball : cannonBalls) {
 		glm::vec3 fireLine = target.CubeObj.Position - ball.CubeObj.Position;
 		GLfloat dist = glm::abs(glm::sqrt(fireLine.x * fireLine.x + fireLine.z * fireLine.z));
 		if (ball.IsActive && dist <= 2.0f) { // small filter
-			std::cout << "checking collision" << std::endl;
 			glm::vec3 tPos = target.CubeObj.Position;
 			glm::vec3 bPos = ball.CubeObj.Position;
 			if (glm::abs(tPos.x - bPos.x) < 0.5f + 0.25f) { // x half size

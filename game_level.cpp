@@ -122,16 +122,16 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 
 				// Initial block
 				GameObject obj(glm::vec3(x, y, z), DEFAULT_SCALE, *colorPointer, 0.0f);
-				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer, false });
+				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
 
 				// Turrets and enemies get a second block stacked on top of the same
 				// x/z axis, eventually would like to make bottom color match surrounding tiles
 				if (state == CubeState::Turret) {
 					GameObject obj(glm::vec3(x, y+1.0f, z), DEFAULT_SCALE, *colorPointer, 0.0f);
-					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer, false });
+					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
 				} else if (state == CubeState::Enemy) {
 					GameObject obj(glm::vec3(x, y+1.0f, z), DEFAULT_SCALE, enemyColor, 0.0f);
-					Enemies.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), enemyOutline, true });
+					Enemies.push_back(EnemyCube{ *first, *effect, obj, state, glm::vec2(i, j), enemyOutline, true });
 				}
 			}
 			j++; i = 0;

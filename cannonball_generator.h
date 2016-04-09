@@ -21,7 +21,7 @@ struct CannonBall {
 	glm::vec3 Grav;
 	bool IsActive;
 
-	CannonBall() : CubeObj(), IsActive(false) {};
+	CannonBall() : CubeObj(), Velocity(), Grav(), IsActive(false) {};
 };
 
 class CannonBallGenerator {
@@ -32,7 +32,7 @@ public:
 	void Update(GLfloat dt);
 	void Draw(glm::mat4 camera, LightSource *lightSource);
 	void Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target);
-	bool CheckCollision(const Cube &target);
+	bool CheckCollision(const EnemyCube &target);
 private:
 	std::vector<CannonBall> cannonBalls;
 	Renderer *cannonBallRenderer;

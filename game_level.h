@@ -36,6 +36,15 @@ struct Cube {
 	CubeState State;
 	glm::vec2 Coords; // row/col values
 	glm::vec4 OutlineColor;
+};
+
+struct EnemyCube {
+	Renderer &MainRenderer;
+	Renderer &OutlineRenderer;
+	GameObject CubeObj;
+	CubeState State;
+	glm::vec2 Coords; // row/col values
+	glm::vec4 OutlineColor;
 	bool IsAlive; // Leaky, most cubes don't care about this
 };
 
@@ -50,7 +59,7 @@ public:
 
 	std::vector<Cube> LevelCubes;
 	std::vector<Cube> Turrets;
-	std::vector<Cube> Enemies;
+	std::vector<EnemyCube> Enemies;
 
 	unsigned int NumberKilled = 0;
 

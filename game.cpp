@@ -9,7 +9,6 @@ LightSource *cannonballLight;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
-
 }
 
 Game::~Game() {
@@ -95,10 +94,11 @@ void Game::Init() {
 	GameLevel testLevel2("More Targets", "levels/level_two.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel1);
 	Levels.push_back(testLevel2);
+	CurrentLevel = 1;
 
 	// Ready cannon balls
 	// look to adjust number if we reclaim 'active' balls often
-	Cannon = new CannonBallGenerator(cubeRenderer, 100);
+	Cannon = new CannonBallGenerator(cubeRenderer, 250);
 }
 
 void Game::Update(GLfloat dt) {
@@ -162,15 +162,14 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 		GameLevel &level = Levels[CurrentLevel];
 		glm::vec3 world = screenToWorld(xPos, yPos);
 		// XXX: Check y, if it's greater than the highest level point
-		// then return as it's clicking on a target
+		// then return as it's clicking on a bullet/ball
 		if (world.y >= 2.0f ) {
 			return;
 		}
 		glm::vec2 levelXY = glm::vec2(world.x, world.z);
 		Cube *cubeTarget = level.CubeFromPosition(levelXY);
 		if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
-			std::cout << "y value: " << world.y << std::endl;
-			Cube turret = level.Turrets[firingFrom++%level.Turrets.size()];
+			Cube turret = level.Turrets[FiringFrom++%level.Turrets.size()];
 			Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);
 		}
 	}
