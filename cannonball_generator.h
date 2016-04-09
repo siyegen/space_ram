@@ -43,4 +43,4 @@ private:
 	void resetCannonBall(CannonBall &cannonball, glm::vec3 position);
 };
 
-#endif // !CANONBALLGENERATOR_H
+#endif

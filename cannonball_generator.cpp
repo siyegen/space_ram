@@ -29,8 +29,6 @@ void CannonBallGenerator::Update(GLfloat dt) {
 
 void CannonBallGenerator::Draw(glm::mat4 camera, LightSource *lightSource) {
 	for (auto &ball : cannonBalls) {
-		// update / set color here
-		// call draw, go to next
 		if (ball.IsActive) {
 			ball.CubeObj.Draw(*cannonBallRenderer, camera, lightSource, nullptr, false);
 		}
@@ -38,11 +36,11 @@ void CannonBallGenerator::Draw(glm::mat4 camera, LightSource *lightSource) {
 }
 
 void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target) {
-	// For now only fire 1
 	std::cout << "Firing! ";
 	amount = 1;
 	CannonBall &current = cannonBalls[getFirstReadyCannonBall()];
 	resetCannonBall(current, origin);
+	// Update "ball" to match direction of the turret
 	current.CubeObj.Rotation = launchRotation;
 
 	target = glm::vec3(target.x - 0.5f, target.y, target.z + 0.5f);
@@ -93,6 +91,7 @@ GLuint CannonBallGenerator::getFirstReadyCannonBall() {
 		}
 	}
 	// Bad, but overwrite first one if we can't find any
+	std::cout << "WARN::OVERWRITING_ACTIVE_CANNON_BALL" << std::endl;
 	currentIndex = 0;
 	return 0;
 }
@@ -106,5 +105,4 @@ void CannonBallGenerator::resetCannonBall(CannonBall &cannonball, glm::vec3 posi
 	cannonball.CubeObj.Color = glm::vec3(red, green, 0.1f);
 	cannonball.CubeObj.Position = position;
 	cannonball.CubeObj.Scale = 0.5f;
-	// cannonball.Velocity = glm::vec3(5.0f, 10.0f, -10.0f);
 }

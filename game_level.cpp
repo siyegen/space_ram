@@ -4,15 +4,18 @@
 #include <ctime>
 #include <random>
 
+
+const GLfloat MIN_HEIGHT = -0.1f;
+const GLfloat MAX_HEIGHT = 0.65f;
+const GLfloat DEFAULT_SCALE = 1.0f;
+
 GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer) {
 	LevelName = name;
 	Width = width;
 	Height = height;
-	ExpectedNumberOfCubes = Width*Height;
 	srand(static_cast <unsigned> (time(0)));
 	CenterPoint = glm::vec3((Width/2)-0.5f, 0.5f, (Height/2-0.5f));
 
-	LevelCubes.reserve(ExpectedNumberOfCubes);
 	fromFile(file, width, height, firstRenderer, effectRenderer);
 }
 
@@ -59,10 +62,15 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 	// raises both an eof and failbit and crashes...
 	levelFile.exceptions(std::ifstream::badbit);
 
+	ExpectedNumberOfCubes = Width*Height;
+	LevelCubes.reserve(ExpectedNumberOfCubes);
+
 	GLuint i = 0, j = 0;
+	// Default colors for the level
 	glm::vec3 normalColor(0.31f, 1.0f, 0.31f);
-	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
 	glm::vec4 normalOutline(0.2f, 0.7f, 0.2f, 0.7f);
+
+	glm::vec3 waterColor(0.21f, 0.51f, 0.9f);
 	glm::vec4 waterOutline(0.0f, 0.4f, 0.9f, 0.7f);
 
 	glm::vec3 turretColor(1.0f, 0.31f, 0.31f);
@@ -75,6 +83,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 		if (!levelFile) {
 			throw std::runtime_error("Can't find file");
 		}
+
 		while (std::getline(levelFile, line)) {
 			// init default colors
 			const glm::vec3 *colorPointer = &normalColor;
@@ -86,7 +95,7 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 				CubeState state = GameLevel::getState(t);
 				GLfloat x = 1.0f * i++;
 				GLfloat z = -1.0f * j;
-				GLfloat y = GameLevel::getHeight(state, -0.1f, 0.65f);
+				GLfloat y = GameLevel::getHeight(state, MIN_HEIGHT, MAX_HEIGHT);
 
 				switch (state) {
 				case CubeState::Normal:
@@ -110,13 +119,18 @@ void GameLevel::fromFile(const GLchar *file, GLuint width, GLuint height, Render
 					outlinePointer = &normalOutline;
 					break;
 				}
-				GameObject obj(glm::vec3(x, y, z), 1.0f, *colorPointer, 0.0f);
-				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
+
+				// Initial block
+				GameObject obj(glm::vec3(x, y, z), DEFAULT_SCALE, *colorPointer, 0.0f);
+				LevelCubes.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer, false });
+
+				// Turrets and enemies get a second block stacked on top of the same
+				// x/z axis, eventually would like to make bottom color match surrounding tiles
 				if (state == CubeState::Turret) {
-					GameObject obj(glm::vec3(x, y+1.0f, z), 1.0f, *colorPointer, 0.0f);
-					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer });
+					GameObject obj(glm::vec3(x, y+1.0f, z), DEFAULT_SCALE, *colorPointer, 0.0f);
+					Turrets.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), *outlinePointer, false });
 				} else if (state == CubeState::Enemy) {
-					GameObject obj(glm::vec3(x, y + 1.0f, z), 1.0f, enemyColor, 0.0f);
+					GameObject obj(glm::vec3(x, y+1.0f, z), DEFAULT_SCALE, enemyColor, 0.0f);
 					Enemies.push_back(Cube{ *first, *effect, obj, state, glm::vec2(i, j), enemyOutline, true });
 				}
 			}
@@ -162,6 +176,7 @@ GLfloat GameLevel::getHeight(CubeState state, GLfloat minVal, GLfloat maxVal) {
 		return 0.7f;
 	}
 
+	// Move to util function?
 	GLfloat y = minVal + (rand() / (RAND_MAX / (maxVal - minVal)));
 	return ((int)(y *100.0f)) / 100.0f; // 2 dec places
 }

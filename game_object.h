@@ -17,8 +17,8 @@ class GameObject {
 public:
   glm::vec3 Position, Color;
 
-  GLfloat Rotation = 0.0f;
   GLfloat Scale = 1.0f;
+  GLfloat Rotation = 0.0f;
   GLboolean IsAlive;
 
   GameObject();

@@ -75,7 +75,6 @@ int main() {
 		lastFrame = currentFrame;
 		glfwPollEvents();
 
-		//deltaTime = 0.001f;
 		// Manage user input
 		SpaceRam.ProcessInput(deltaTime);
 

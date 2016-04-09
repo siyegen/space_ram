@@ -1,6 +1,7 @@
 SpaceRam
-=-=-=-=-
-Ramparts inspired game, in SPACE!
+========
+
+Ramparts inspired game, in SPACE(eventually)!
 
 
 #### about
