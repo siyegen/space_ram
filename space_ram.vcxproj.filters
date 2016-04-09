@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{925913d1-50a1-4712-aacd-fd2e1adad1d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\levels">
+      <UniqueIdentifier>{fe363da9-1601-4a0c-bfec-874ab38088ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -37,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cannonball_generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,39 +77,48 @@
     <ClCompile Include="cannonball_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\diffuse_only.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
     <None Include="shaders\lamp.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="shaders\lamp.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="shaders\outline.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="shaders\outline.gs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="shaders\outline.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="shaders\simple3d.vs">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="shaders\diffuse_only.frag">
-      <Filter>Resource Files</Filter>
+    <None Include="shaders\text.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="shaders\text.vs">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="level_test.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="levels\level_one.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\levels</Filter>
+    </Text>
+    <Text Include="level_test.txt">
+      <Filter>Resource Files\levels</Filter>
     </Text>
     <Text Include="levels\level_two.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\levels</Filter>
     </Text>
   </ItemGroup>
 </Project>

@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,6 +124,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\diffuse_only.frag" />
@@ -144,6 +146,8 @@
     <None Include="shaders\outline.gs" />
     <None Include="shaders\outline.vs" />
     <None Include="shaders\simple3d.vs" />
+    <None Include="shaders\text.frag" />
+    <None Include="shaders\text.vs" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="levels\level_two.txt" />
