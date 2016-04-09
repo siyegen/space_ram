@@ -34,7 +34,7 @@ struct Cube {
 	Renderer &OutlineRenderer;
 	GameObject CubeObj;
 	CubeState State;
-	glm::vec2 Coords; // row/col values
+	glm::vec2 TilePos; // row/col values
 	glm::vec4 OutlineColor;
 };
 
@@ -45,7 +45,8 @@ struct EnemyCube {
 	CubeState State;
 	glm::vec2 Coords; // row/col values
 	glm::vec4 OutlineColor;
-	bool IsAlive; // Leaky, most cubes don't care about this
+	// Prev values all redundant
+	bool IsAlive;
 };
 
 class GameLevel {

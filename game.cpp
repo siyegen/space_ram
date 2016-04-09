@@ -130,7 +130,7 @@ bool Game::CheckHit() {
 	GameLevel &level = Levels[CurrentLevel];
 	for (auto &enemy : level.Enemies) {
 		if (enemy.IsAlive) {
-			if (Cannon->CheckCollision(enemy)) {
+			if (Cannon->CheckCollision(enemy.CubeObj)) {
 				enemy.IsAlive = false;
 				level.NumberKilled++;
 				std::cout << "Boom, hit!" << std::endl;

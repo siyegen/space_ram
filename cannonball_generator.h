@@ -10,7 +10,6 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-#include "game_level.h"
 #include "game_object.h"
 #include "renderer.h"
 
@@ -32,7 +31,7 @@ public:
 	void Update(GLfloat dt);
 	void Draw(glm::mat4 camera, LightSource *lightSource);
 	void Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target);
-	bool CheckCollision(const EnemyCube &target);
+	bool CheckCollision(const GameObject &target);
 private:
 	std::vector<CannonBall> cannonBalls;
 	Renderer *cannonBallRenderer;

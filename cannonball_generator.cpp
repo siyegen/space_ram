@@ -66,16 +66,17 @@ void CannonBallGenerator::Fire(GLuint amount, glm::vec3 origin, GLfloat launchRo
 }
 
 // This could probably just check against the GameObject the cube contains, minus the
-bool CannonBallGenerator::CheckCollision(const EnemyCube &target) {
+bool CannonBallGenerator::CheckCollision(const GameObject &target) {
 	for (auto &ball : cannonBalls) {
-		glm::vec3 fireLine = target.CubeObj.Position - ball.CubeObj.Position;
+		glm::vec3 fireLine = target.Position - ball.CubeObj.Position;
 		GLfloat dist = glm::abs(glm::sqrt(fireLine.x * fireLine.x + fireLine.z * fireLine.z));
 		if (ball.IsActive && dist <= 2.0f) { // small filter
-			glm::vec3 tPos = target.CubeObj.Position;
 			glm::vec3 bPos = ball.CubeObj.Position;
-			if (glm::abs(tPos.x - bPos.x) < 0.5f + 0.25f) { // x half size
-				if (glm::abs(tPos.y - bPos.y) < 0.5f + 0.25f) { // y
-					if (glm::abs(tPos.z - bPos.z) < 0.5f + 0.25f) { // z
+			GLfloat tSize = target.Scale / 2;
+			GLfloat bSize = ball.CubeObj.Scale / 2;
+			if (glm::abs(target.Position.x - bPos.x) < tSize + bSize) { // x half size
+				if (glm::abs(target.Position.y - bPos.y) < tSize + bSize) { // y
+					if (glm::abs(target.Position.z - bPos.z) < tSize + bSize) { // z
 						ball.IsActive = false;
 						return true;
 					}
