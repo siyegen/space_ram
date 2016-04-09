@@ -1,14 +1,19 @@
 #include "texture.h"
 
-void TempTexture::LoadImage(const GLchar *name, Shader shader) {
+#include <iostream>
+
+
+void TempTexture::LoadImage(std::string name, Shader shader) {
 	TextureShader = shader;
 	int width, height;
-	unsigned char* image = SOIL_load_image(name, &width, &height, 0, SOIL_LOAD_RGBA);
+	unsigned char* image = SOIL_load_image(name.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 
+	std::cout << "text " << Texture << std::endl;
 	glGenTextures(1, &Texture);
+	std::cout << "text " << Texture << std::endl;
 
 	glBindTexture(GL_TEXTURE_2D, Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -36,9 +41,11 @@ void TempTexture::LoadImage(const GLchar *name, Shader shader) {
 	glBindVertexArray(0);
 }
 
-void TempTexture::Draw(glm::mat4 projection) {
+void TempTexture::Draw(glm::mat4 projection, glm::mat4 view) {
 	TextureShader.Use();
 	TextureShader.SetMatrix4("projection", projection);
+	TextureShader.SetMatrix4("view", view);
+	TextureShader.SetVector3f("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Texture);

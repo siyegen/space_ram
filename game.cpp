@@ -6,6 +6,7 @@ Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
 LightSource *cannonballLight;
+TempTexture *textt;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -17,13 +18,14 @@ Game::~Game() {
 	delete lightSource;
 	delete cannonballLight;
 	delete Cannon;
+	delete textt;
 }
 
 void Game::Init() {
 	// Camera Init
 	GameCamera = Camera(glm::vec3((24 / 2), 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
-
+	
 	// One cube to rule them all
 	std::vector<GLfloat> vertices{
 		// Position			//Normal
@@ -83,9 +85,13 @@ void Game::Init() {
 
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
+	Shader textureShader = ResourceManager::LoadShader("texture", "shaders/text.vs", "shaders/text.frag");
 
 	cubeRenderer = new Renderer(testCube, vertices);
 	outlineRenderer = new Renderer(outlineCube, vertices);
+	std::string tttt = "imgs/minecraft_font.bmp";
+	textt = new TempTexture();
+	textt->LoadImage(tttt, textureShader);
 
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
@@ -141,6 +147,8 @@ bool Game::CheckHit() {
 }
 
 void Game::Render() {
+	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
+	textt->Draw(HUD, GameCamera.GetViewMatrix());
 	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 	Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
 }
