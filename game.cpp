@@ -6,9 +6,8 @@ Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
 LightSource *cannonballLight;
-TextureRenderer *textt;
-
-Text *hudText;
+TextRenderer *textRenderer;
+Text *hudFont;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -20,8 +19,8 @@ Game::~Game() {
 	delete lightSource;
 	delete cannonballLight;
 	delete Cannon;
-	delete textt;
-	delete hudText;
+	delete textRenderer;
+	delete hudFont;
 }
 
 void Game::Init() {
@@ -30,6 +29,7 @@ void Game::Init() {
 
 	//GameCamera = Camera(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
+	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
 	
 	// One cube to rule them all
 	std::vector<GLfloat> vertices{
@@ -90,14 +90,13 @@ void Game::Init() {
 
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
-	Shader textureShader = ResourceManager::LoadShader("texture", "shaders/text.vs", "shaders/text.frag");
+	Shader textShader = ResourceManager::LoadShader("texture", "shaders/text.vs", "shaders/text.frag");
 
 	cubeRenderer = new Renderer(testCube, vertices);
 	outlineRenderer = new Renderer(outlineCube, vertices);
-	textt = new TextureRenderer();
-	textt->LoadImage("imgs/minecraft_font.bmp", textureShader);
+	textRenderer = new TextRenderer(HUD, textShader);
 
-	hudText = new Text("imgs/minecraft_font.bmp");
+	hudFont = new Text("imgs/minecraft_font.bmp", 32.0f, 32);
 
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
@@ -155,11 +154,11 @@ bool Game::CheckHit() {
 void Game::Render() {
 	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 	Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
-	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
 	glDepthMask(GL_FALSE);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	//textt->Draw(HUD, GameCamera.GetViewMatrix());
-	textt->DrawWord("Albel",HUD, GameCamera.GetViewMatrix());
+	textRenderer->DrawText("Look At", *hudFont, glm::vec2(600.0f, 100.0f), 128.0f, glm::vec4(1.0f));
+	textRenderer->DrawText("My Text", *hudFont, glm::vec2(600.0f, 164.0f), 128.0f, glm::vec4(1.0f, 0.5f, 0.5, 1.0f));
+	textRenderer->DrawText("Woo", *hudFont, glm::vec2(600.0f, 228.0f), 128.0f, glm::vec4(0.5f, 0.7, 0.3f, 1.0f));
 	glDepthMask(GL_TRUE);
 }
 

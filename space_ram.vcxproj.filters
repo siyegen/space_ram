@@ -45,10 +45,10 @@
     <ClInclude Include="cannonball_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="texture_renderer.h">
+    <ClInclude Include="text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="text.h">
+    <ClInclude Include="text_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -80,10 +80,10 @@
     <ClCompile Include="cannonball_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="texture_renderer.cpp">
+    <ClCompile Include="text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="text.cpp">
+    <ClCompile Include="text_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

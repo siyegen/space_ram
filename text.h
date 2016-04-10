@@ -15,8 +15,11 @@ public:
 	GLuint VBO, VAO;
 
 	int Width, Height;
+	int StartCharacter;
+	GLfloat CharacterSize;
+	int Rows, Cols;
 
-	Text(std::string name);
+	Text(std::string fontImg, GLfloat characterSize, int s);
 };
 
 #endif

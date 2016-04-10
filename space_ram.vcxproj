@@ -125,7 +125,7 @@
     <ClInclude Include="resource_manager.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="text.h" />
-    <ClInclude Include="texture_renderer.h" />
+    <ClInclude Include="text_renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
@@ -138,7 +138,7 @@
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="text.cpp" />
-    <ClCompile Include="texture_renderer.cpp" />
+    <ClCompile Include="text_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\diffuse_only.frag" />

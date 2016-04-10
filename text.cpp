@@ -1,9 +1,12 @@
 #include "text.h"
 
-Text::Text(std::string name) {
+Text::Text(std::string fontImg, GLfloat characterSize, int startCharacter) {
+	CharacterSize = characterSize;
+	StartCharacter = startCharacter;
+
 	glBindTexture(GL_TEXTURE_2D, ID);
 
-	unsigned char *image = SOIL_load_image(name.c_str(), &Width, &Height, 0, SOIL_LOAD_RGBA);
+	unsigned char *image = SOIL_load_image(fontImg.c_str(), &Width, &Height, 0, SOIL_LOAD_RGBA);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
@@ -12,6 +15,7 @@ Text::Text(std::string name) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLfloat vertices[] = {
@@ -35,4 +39,7 @@ Text::Text(std::string name) {
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	Cols = Width / CharacterSize;
+	Rows = Height / CharacterSize;
 }
