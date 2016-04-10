@@ -6,7 +6,7 @@ Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
 LightSource *cannonballLight;
-TempTexture *textt;
+TextureRenderer *textt;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -91,7 +91,7 @@ void Game::Init() {
 
 	cubeRenderer = new Renderer(testCube, vertices);
 	outlineRenderer = new Renderer(outlineCube, vertices);
-	textt = new TempTexture();
+	textt = new TextureRenderer();
 	textt->LoadImage("imgs/minecraft_font.bmp", textureShader);
 
 	testCube.Use().SetMatrix4("projection", projection);

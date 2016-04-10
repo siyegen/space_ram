@@ -1,9 +1,9 @@
-#include "texture.h"
+#include "texture_renderer.h"
 
 #include <iostream>
 
 
-void TempTexture::LoadImage(std::string name, Shader shader) {
+void TextureRenderer::LoadImage(std::string name, Shader shader) {
 	TextureShader = shader;
 
 
@@ -17,6 +17,9 @@ void TempTexture::LoadImage(std::string name, Shader shader) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
+	glBindTexture(GL_TEXTURE_2D, Texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLfloat vertices[] = {
@@ -42,14 +45,14 @@ void TempTexture::LoadImage(std::string name, Shader shader) {
 	glBindVertexArray(0);
 }
 
-void TempTexture::Draw(glm::mat4 projection, glm::mat4 view) {
+void TextureRenderer::Draw(glm::mat4 projection, glm::mat4 view) {
 	TextureShader.Use();
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(600.0f, 500.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(500.0f, 500.0f, 1.0f));
 	TextureShader.SetMatrix4("projection", projection);
 	TextureShader.SetMatrix4("model", model);
-	TextureShader.SetVector4f("textColor", glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+	TextureShader.SetVector4f("textColor", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 
 	//glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Texture);

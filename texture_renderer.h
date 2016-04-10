@@ -11,7 +11,7 @@
 
 #include "shader.h"
 
-class TempTexture {
+class TextureRenderer {
 public:
 	GLuint Texture;
 	Shader TextureShader;

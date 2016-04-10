@@ -16,7 +16,7 @@
 #include "game_object.h"
 #include "game_level.h"
 #include "cannonball_generator.h"
-#include "texture.h"
+#include "texture_renderer.h"
 
 
 enum class GameState {
