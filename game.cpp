@@ -24,6 +24,8 @@ Game::~Game() {
 void Game::Init() {
 	// Camera Init
 	GameCamera = Camera(glm::vec3((24 / 2), 21.0f, 11.5f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -40.0f);
+
+	//GameCamera = Camera(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 	glm::mat4 projection = glm::perspective(GameCamera.Zoom, (GLfloat)(Width / Height), 0.1f, 100.0f);
 	
 	// One cube to rule them all
@@ -89,9 +91,8 @@ void Game::Init() {
 
 	cubeRenderer = new Renderer(testCube, vertices);
 	outlineRenderer = new Renderer(outlineCube, vertices);
-	std::string tttt = "imgs/minecraft_font.bmp";
 	textt = new TempTexture();
-	textt->LoadImage(tttt, textureShader);
+	textt->LoadImage("imgs/minecraft_font.bmp", textureShader);
 
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
@@ -147,10 +148,13 @@ bool Game::CheckHit() {
 }
 
 void Game::Render() {
-	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
-	textt->Draw(HUD, GameCamera.GetViewMatrix());
 	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 	Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
+	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
+	glDepthMask(GL_FALSE);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	textt->Draw(HUD, GameCamera.GetViewMatrix());
+	glDepthMask(GL_TRUE);
 }
 
 void Game::ProcessInput(GLfloat dt) {
