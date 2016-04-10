@@ -124,6 +124,7 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource_manager.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="text.h" />
     <ClInclude Include="texture_renderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +137,7 @@
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="text.cpp" />
     <ClCompile Include="texture_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>

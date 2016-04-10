@@ -20,6 +20,7 @@ public:
 
 	void LoadImage(std::string name, Shader shader);
 	void Draw(glm::mat4 projection, glm::mat4 view);
+	void DrawWord(std::string text, glm::mat4 projection, glm::mat4 view);
 };
 
 #endif

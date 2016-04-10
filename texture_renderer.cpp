@@ -1,6 +1,7 @@
 #include "texture_renderer.h"
 
 #include <iostream>
+#include <ctype.h>
 
 
 void TextureRenderer::LoadImage(std::string name, Shader shader) {
@@ -18,8 +19,10 @@ void TextureRenderer::LoadImage(std::string name, Shader shader) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, Texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	GLfloat vertices[] = {
@@ -48,15 +51,50 @@ void TextureRenderer::LoadImage(std::string name, Shader shader) {
 void TextureRenderer::Draw(glm::mat4 projection, glm::mat4 view) {
 	TextureShader.Use();
 	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(500.0f, 500.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(100.0f, 100.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(128.0f, 128.0f, 1.0f));
 	TextureShader.SetMatrix4("projection", projection);
 	TextureShader.SetMatrix4("model", model);
+	TextureShader.SetVector2f("imgSize", 256.0f, 256.0f);
+	TextureShader.SetVector2f("size", 32.0f, 32.0f);
+	TextureShader.SetVector2f("offset", 32.0f*4, (32.0f*4));
 	TextureShader.SetVector4f("textColor", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 
 	//glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Texture);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
+
+void TextureRenderer::DrawWord(std::string text, glm::mat4 projection, glm::mat4 view) {
+	TextureShader.Use();
+	TextureShader.SetMatrix4("projection", projection);
+
+	GLfloat i = 0;
+	GLfloat spacing = 18.0f;
+	glBindTexture(GL_TEXTURE_2D, Texture);
+	for (auto &letter : text) {
+		glm::mat4 model;
+		// Move to starting point
+		int c = (int)toupper(letter) - 32;
+		GLuint xOff = c % 8; // 8 is number of rows
+		GLuint yOff = c / 8;
+		model = glm::translate(model, glm::vec3(100.0f+i, 100.0f, 0.0f));
+		// Scale size of image we will draw
+		model = glm::scale(model, glm::vec3(128.0f, 128.0f, 1.0f));
+		TextureShader.SetMatrix4("model", model);
+
+		TextureShader.SetVector2f("imgSize", 256.0f, 256.0f);
+		TextureShader.SetVector2f("size", 32.0f, 32.0f);
+		TextureShader.SetVector2f("offset", 32.0f * xOff, 32.0f * yOff);
+		TextureShader.SetVector4f("textColor", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+
+		//glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		i += 32.0f + spacing;
+	}
+
 	glBindVertexArray(0);
 }

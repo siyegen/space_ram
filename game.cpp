@@ -8,6 +8,8 @@ LightSource *lightSource;
 LightSource *cannonballLight;
 TextureRenderer *textt;
 
+Text *hudText;
+
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
 }
@@ -19,6 +21,7 @@ Game::~Game() {
 	delete cannonballLight;
 	delete Cannon;
 	delete textt;
+	delete hudText;
 }
 
 void Game::Init() {
@@ -94,6 +97,8 @@ void Game::Init() {
 	textt = new TextureRenderer();
 	textt->LoadImage("imgs/minecraft_font.bmp", textureShader);
 
+	hudText = new Text("imgs/minecraft_font.bmp");
+
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
@@ -153,7 +158,8 @@ void Game::Render() {
 	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
 	glDepthMask(GL_FALSE);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	textt->Draw(HUD, GameCamera.GetViewMatrix());
+	//textt->Draw(HUD, GameCamera.GetViewMatrix());
+	textt->DrawWord("Albel",HUD, GameCamera.GetViewMatrix());
 	glDepthMask(GL_TRUE);
 }
 
