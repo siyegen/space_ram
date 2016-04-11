@@ -176,7 +176,7 @@ void Game::Render() {
 		for (auto &level : LevelSelect) {
 			offset = textRenderer->DrawText(level.Display, *hudFont, glm::vec2(Width, offset.y + 20.0f), level.Size, glm::vec4(1.0f), true);
 			if (level.Beaten) {
-				textRenderer->DrawText("*", *hudFont, glm::vec2(offset.x, offset.y + 20.0f), level.Size, glm::vec4(0.7f, 0.7f, 0.1f, 1.0f));
+				textRenderer->DrawText("(Completed)", *hudFont, glm::vec2(offset.x, offset.y), level.Size, glm::vec4(0.7f, 0.7f, 0.1f, 1.0f));
 			}
 			level.Position.y = offset.y;
 			level.Position.x = offset.x - textRenderer->DimensionsOfText(level.Display, *hudFont, level.Size).x - textRenderer->DimensionsOfText(">>", *hudFont, level.Size).x;
