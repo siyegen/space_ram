@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -156,6 +156,14 @@
     <Text Include="levels\level_two.txt" />
     <Text Include="levels\level_one.txt" />
     <Text Include="level_test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="audio\bg.mp3" />
+    <Media Include="audio\cannon_fire.wav" />
+    <Media Include="audio\explode.wav" />
+    <Media Include="audio\menu_down.wav" />
+    <Media Include="audio\menu_select.wav" />
+    <Media Include="audio\menu_up.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

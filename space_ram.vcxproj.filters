@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\levels">
       <UniqueIdentifier>{fe363da9-1601-4a0c-bfec-874ab38088ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\audio">
+      <UniqueIdentifier>{856713f0-4c24-42cf-9754-f0951fac38bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -129,5 +132,25 @@
     <Text Include="levels\demo.txt">
       <Filter>Resource Files\levels</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="audio\bg.mp3">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
+    <Media Include="audio\cannon_fire.wav">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
+    <Media Include="audio\explode.wav">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
+    <Media Include="audio\menu_down.wav">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
+    <Media Include="audio\menu_select.wav">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
+    <Media Include="audio\menu_up.wav">
+      <Filter>Resource Files\audio</Filter>
+    </Media>
   </ItemGroup>
 </Project>

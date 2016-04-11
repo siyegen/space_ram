@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <iostream>
+#include <irrklang/irrKlang.h>
 
 
 Renderer *cubeRenderer;
@@ -10,6 +11,7 @@ LightSource *cannonballLight;
 TextRenderer *textRenderer;
 Text *hudFont;
 GameLevel *demoLevel;
+irrklang::ISoundEngine *SoundEngine = irrklang::createIrrKlangDevice();
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -24,6 +26,8 @@ Game::~Game() {
 	delete textRenderer;
 	delete hudFont;
 	delete demoLevel;
+
+	SoundEngine->drop();
 }
 
 void Game::Init() {
@@ -160,6 +164,8 @@ bool Game::CheckHit() {
 			if (Cannon->CheckCollision(enemy.CubeObj)) {
 				enemy.IsAlive = false;
 				level.NumberKilled++;
+				SoundEngine->setSoundVolume(0.3f);
+				SoundEngine->play2D("audio/explode.wav");
 				std::cout << "Boom, hit!" << std::endl;
 			}
 		}
@@ -209,12 +215,18 @@ void Game::ProcessInput(GLfloat dt) {
 	} else if (State == GameState::MENU) {
 		if (Keys[GLFW_KEY_W]) {
 			CurrentSelection = (CurrentSelection + 1) % LevelSelect.size();
+			SoundEngine->setSoundVolume(0.6f);
+			SoundEngine->play2D("audio/menu_up.wav");
 			Keys[GLFW_KEY_W] = GL_FALSE;
 		} else if (Keys[GLFW_KEY_S]) {
 			CurrentSelection = (CurrentSelection - 1) % LevelSelect.size();
+			SoundEngine->setSoundVolume(0.6f);
+			SoundEngine->play2D("audio/menu_down.wav");
 			Keys[GLFW_KEY_S] = GL_FALSE;
 		}
 		if (Keys[GLFW_KEY_SPACE]) {
+			SoundEngine->setSoundVolume(1.0f);
+			SoundEngine->play2D("audio/menu_select.wav");
 			StartLevel(CurrentSelection);
 			Keys[GLFW_KEY_SPACE] = GL_FALSE;
 		}
@@ -240,6 +252,8 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 			Cube *cubeTarget = level.CubeFromPosition(levelXY);
 			if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
 				Cube turret = level.Turrets[FiringFrom++%level.Turrets.size()];
+				SoundEngine->setSoundVolume(0.2f);
+				SoundEngine->play2D("audio/cannon_fire.wav");
 				Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);
 			}
 		}
