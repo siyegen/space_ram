@@ -20,6 +20,16 @@
 #include "text.h"
 
 
+struct LevelSelectHud {
+	glm::vec2 Position;
+	std::string Display;
+	GLfloat Size;
+	bool Beaten = false;
+	LevelSelectHud(glm::vec2 position, std::string display, GLfloat size, bool beaten) {
+		Position = position; Display = display; Size = size; Beaten = beaten;
+	};
+};
+
 enum class GameState {
 	ACTIVE,
 	MENU,
@@ -37,6 +47,10 @@ public:
 
 	std::vector<GameLevel> Levels;
 	GLuint CurrentLevel = 0;
+
+	std::vector<LevelSelectHud> LevelSelect;
+	GLuint CurrentSelection = 0;
+	glm::vec2 SelectCursor;
 
 	CannonBallGenerator *Cannon = nullptr;
 

@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+
 Renderer *cubeRenderer;
 Renderer *outlineRenderer;
 LightSource *lightSource;
@@ -107,7 +108,14 @@ void Game::Init() {
 	demoLevel = new GameLevel("Demo", "levels/demo.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel1);
 	Levels.push_back(testLevel2);
-	CurrentLevel = 1;
+
+	// Build level select HUD
+	int i = 1;
+	for (auto &level : Levels) {
+		std::string display = "Level" + std::to_string(i++);
+		LevelSelectHud ll(glm::vec2(0.0f), display, 32.0f, false);
+		LevelSelect.push_back(ll);
+	}
 
 	// Ready cannon balls
 	// look to adjust number if we reclaim 'active' balls often
@@ -120,6 +128,7 @@ void Game::Update(GLfloat dt) {
 		if (level.NumberKilled == level.Enemies.size()) {
 			// switch to rotating around screen on win
 			State = GameState::WIN;
+			LevelSelect[CurrentLevel].Beaten = true;
 			return;
 		}
 		if (level.HasTarget) {
@@ -136,7 +145,8 @@ void Game::Update(GLfloat dt) {
 		Cannon->Update(dt);
 		CheckHit();
 	} else if (State == GameState::MENU) {
-
+		LevelSelectHud &hud = LevelSelect[CurrentSelection];
+		SelectCursor = hud.Position;
 	}
 }
 
@@ -160,15 +170,25 @@ bool Game::CheckHit() {
 void Game::Render() {
 	if (State == GameState::MENU) {
 		demoLevel->Draw(GameCamera.GetViewMatrix(), lightSource);
-		glm::vec2 offset = textRenderer->DrawText("SpaceRam", *hudFont, glm::vec2(Width, Height / 3), 256.0f, glm::vec4(1.0f, 0.21f, 0.21f, 1.0f), true);
-		textRenderer->DrawText("Press Space To Start", *hudFont, glm::vec2(Width, offset.y + 128.0f), 64.0f, glm::vec4(1.0f), true);
+		glm::vec2 offset = textRenderer->DrawText("SpaceRam", *hudFont, glm::vec2(Width, Height / 4), 256.0f, glm::vec4(1.0f, 0.21f, 0.21f, 1.0f), true);
+		offset = textRenderer->DrawText("Press Space To Start", *hudFont, glm::vec2(Width, offset.y + 128.0f), 64.0f, glm::vec4(1.0f), true);
+		offset.y += 25.0f;
+		for (auto &level : LevelSelect) {
+			offset = textRenderer->DrawText(level.Display, *hudFont, glm::vec2(Width, offset.y + 20.0f), level.Size, glm::vec4(1.0f), true);
+			if (level.Beaten) {
+				textRenderer->DrawText("*", *hudFont, glm::vec2(offset.x, offset.y + 20.0f), level.Size, glm::vec4(0.7f, 0.7f, 0.1f, 1.0f));
+			}
+			level.Position.y = offset.y;
+			level.Position.x = offset.x - textRenderer->DimensionsOfText(level.Display, *hudFont, level.Size).x - textRenderer->DimensionsOfText(">>", *hudFont, level.Size).x;
+			
+		}
+		textRenderer->DrawText(">> ", *hudFont, SelectCursor, 32.0f, glm::vec4(1.0f, 1.0f, 0.6f, 1.0f));
 	} else if (State == GameState::ACTIVE) {
 		GameLevel &level = Levels[CurrentLevel];
 		level.Draw(GameCamera.GetViewMatrix(), lightSource);
 		Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
-		glm::vec2 offset = textRenderer->DrawText("Current Level:", *hudFont, glm::vec2(5.0f, Height - 32.0f), 64.0f, glm::vec4(0.8f, 0.1f, 0.2f, 1.0f));
-		textRenderer->DrawText(level.LevelName, *hudFont, glm::vec2(offset.x, Height-32.0f), 64.0f, glm::vec4(1.0f));
-		offset = textRenderer->DrawText("Enemies left", *hudFont, glm::vec2(5.0f, 5.0f), 48.0f, glm::vec4(1.0f));
+		textRenderer->DrawText(level.LevelName, *hudFont, glm::vec2(Width, Height-32.0f), 64.0f, glm::vec4(1.0f), true);
+		glm::vec2 offset = textRenderer->DrawText("Enemies left", *hudFont, glm::vec2(5.0f, 5.0f), 48.0f, glm::vec4(1.0f));
 		textRenderer->DrawText(std::to_string(level.Enemies.size() - level.NumberKilled), *hudFont, glm::vec2(offset.x+10.0f, 5.0f), 48.0f, glm::vec4(1.0, 0.21f, 0.1f, 1.0f));
 	} else if (State == GameState::WIN) {
 		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
@@ -187,8 +207,15 @@ void Game::ProcessInput(GLfloat dt) {
 			Keys[GLFW_KEY_E] = GL_FALSE;
 		}
 	} else if (State == GameState::MENU) {
+		if (Keys[GLFW_KEY_W]) {
+			CurrentSelection = (CurrentSelection + 1) % LevelSelect.size();
+			Keys[GLFW_KEY_W] = GL_FALSE;
+		} else if (Keys[GLFW_KEY_S]) {
+			CurrentSelection = (CurrentSelection - 1) % LevelSelect.size();
+			Keys[GLFW_KEY_S] = GL_FALSE;
+		}
 		if (Keys[GLFW_KEY_SPACE]) {
-			StartLevel(1);
+			StartLevel(CurrentSelection);
 			Keys[GLFW_KEY_SPACE] = GL_FALSE;
 		}
 	} else if (State == GameState::WIN) {

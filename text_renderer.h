@@ -21,6 +21,8 @@ public:
 
 	// Returns last position drawn at
 	glm::vec2 DrawText(std::string toRender, Text text, glm::vec2 position, GLfloat size, glm::vec4 color, bool center=false);
+	// Used to calculate positions without rendering them.
+	glm::vec2 DimensionsOfText(std::string toRender, Text textFont, GLfloat size);
 };
 
 #endif

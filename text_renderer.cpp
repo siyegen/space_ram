@@ -47,5 +47,10 @@ glm::vec2 TextRenderer::DrawText(std::string toRender, Text textFont, glm::vec2 
 
 	glDepthMask(GL_TRUE);
 	glBindVertexArray(0);
-	return glm::vec2(i, position.y);
+	return glm::vec2(position.x + i, position.y);
+}
+
+glm::vec2 TextRenderer::DimensionsOfText(std::string toRender, Text textFont, GLfloat size) {
+	GLfloat offset = textFont.EffectiveCharSize * (size / textFont.CellSize);// size / textFont.CharacterSize;
+	return glm::vec2(toRender.length() * offset, size);
 }
