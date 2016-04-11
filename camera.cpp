@@ -7,6 +7,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch) : F
 	Position = position;
 	Radius = position.z + 5.0f;
 	ZRadius = Radius / 2.0f;
+	MinZ = position.z - PanAmount;
+	MaxZ = position.z + PanAmount;
 	WorldUp = up;
 	Yaw = yaw;
 	Pitch = pitch;
@@ -21,14 +23,30 @@ void Camera::Update(GLfloat dt) {
 }
 
 void Camera::RotateRight() {
-	std::cout << "Right" << std::endl;
 	Rotate(PanState::Right);
 }
 
 void Camera::RotateLeft() {
-	std::cout << "Left" << std::endl;
 	Rotate(PanState::Left);
 }
+
+void Camera::PanIn() {
+	GLfloat rr = glm::max(MinZ, Position.z - PanAmount);
+	Position.z = rr;
+}
+
+void Camera::PanOut() {
+	GLfloat rr = glm::min(MaxZ, Position.z + PanAmount);
+	Position.z = rr;
+}
+
+void Camera::Center(glm::vec3 position) {
+	CurrentPanState = PanState::Center;
+	Yaw = YAW;
+	Position = glm::vec3(position.x, Position.y, position.z);
+	updateCameraVectors();
+}
+
 
 void Camera::Rotate(PanState moveTo) {
 	switch (CurrentPanState) {

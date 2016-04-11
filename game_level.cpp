@@ -14,7 +14,7 @@ GameLevel::GameLevel(std::string name, const GLchar *file, GLuint width, GLuint 
 	Width = width;
 	Height = height;
 	srand(static_cast <unsigned> (time(0)));
-	CenterPoint = glm::vec3((Width/2)-0.5f, 0.5f, (Height/2-0.5f));
+	CenterPoint = glm::vec3((Width/2), 0.5f, (Height/2));
 
 	fromFile(file, width, height, firstRenderer, effectRenderer);
 }

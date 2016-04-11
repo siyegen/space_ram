@@ -36,7 +36,7 @@ void Game::Init() {
 	glm::mat4 HUD = glm::ortho(0.0f, (GLfloat)Width, (GLfloat)Height, 0.0f, -1.0f, 1.0f);
 	
 	// One cube to rule them all
-	std::vector<GLfloat> vertices{
+	std::vector<GLfloat> cubeVertices{
 		// Position			//Normal
 		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
@@ -101,8 +101,8 @@ void Game::Init() {
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
 	Shader textShader = ResourceManager::LoadShader("texture", "shaders/text.vs", "shaders/text.frag");
 
-	cubeRenderer = new Renderer(testCube, vertices);
-	outlineRenderer = new Renderer(outlineCube, vertices);
+	cubeRenderer = new Renderer(testCube, cubeVertices);
+	outlineRenderer = new Renderer(outlineCube, cubeVertices);
 	textRenderer = new TextRenderer(HUD, textShader);
 
 	hudFont = new Text("imgs/minecraft_font.bmp", 32.0f, 16.0f, 32);
@@ -110,11 +110,10 @@ void Game::Init() {
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
 
-	GameLevel testLevel1("Simple and Easy", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
-	GameLevel testLevel2("More Targets", "levels/level_two.txt", 24, 30, cubeRenderer, outlineRenderer);
+	Levels.push_back(GameLevel("Simple and Easy", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer));
+	Levels.push_back(GameLevel("More Targets", "levels/level_two.txt", 24, 30, cubeRenderer, outlineRenderer));
+	Levels.push_back(GameLevel("Water World", "levels/level_three.txt", 50, 15, cubeRenderer, outlineRenderer));
 	demoLevel = new GameLevel("Demo", "levels/demo.txt", 24, 30, cubeRenderer, outlineRenderer);
-	Levels.push_back(testLevel1);
-	Levels.push_back(testLevel2);
 
 	// Build level select HUD
 	int i = 1;
@@ -135,6 +134,7 @@ void Game::Update(GLfloat dt) {
 		if (level.NumberKilled == level.Enemies.size()) {
 			// switch to rotating around screen on win
 			State = GameState::WIN;
+			GameCamera.Center(Levels[CurrentLevel].CenterPoint);
 			LevelSelect[CurrentLevel].Beaten = true;
 			return;
 		}
@@ -153,7 +153,11 @@ void Game::Update(GLfloat dt) {
 		CheckHit();
 	} else if (State == GameState::MENU) {
 		LevelSelectHud &hud = LevelSelect[CurrentSelection];
+		GameCamera.Center(Levels[CurrentLevel].CenterPoint);
 		SelectCursor = hud.Position;
+	} else if (State == GameState::WIN) {
+		GameCamera.Position.x = (sin(glfwGetTime()) * level.CenterPoint.x) + level.CenterPoint.x /2;
+		GameCamera.Position.z = (cos(glfwGetTime()) * level.CenterPoint.z) + level.CenterPoint.z / 2;
 	}
 }
 
@@ -214,13 +218,24 @@ void Game::ProcessInput(GLfloat dt) {
 			GameCamera.RotateRight();
 			Keys[GLFW_KEY_E] = GL_FALSE;
 		}
+		if (Keys[GLFW_KEY_W]) {
+			GameCamera.PanIn();
+			Keys[GLFW_KEY_W] = GL_FALSE;
+		} else if (Keys[GLFW_KEY_S]) {
+			GameCamera.PanOut();
+			Keys[GLFW_KEY_S] = GL_FALSE;
+		}
 	} else if (State == GameState::MENU) {
 		if (Keys[GLFW_KEY_W]) {
-			CurrentSelection = (CurrentSelection + 1) % LevelSelect.size();
+			if (CurrentSelection == 0) {
+				CurrentSelection = LevelSelect.size()-1;
+			} else {
+				CurrentSelection = (CurrentSelection - 1) % LevelSelect.size();
+			}
 			SoundManager::PlaySound("menu_up", 0.6f);
 			Keys[GLFW_KEY_W] = GL_FALSE;
 		} else if (Keys[GLFW_KEY_S]) {
-			CurrentSelection = (CurrentSelection - 1) % LevelSelect.size();
+			CurrentSelection = (CurrentSelection + 1) % LevelSelect.size();
 			SoundManager::PlaySound("menu_down", 0.6f);
 			Keys[GLFW_KEY_S] = GL_FALSE;
 		}
@@ -287,6 +302,7 @@ glm::vec3 Game::screenToWorld(double xPos, double yPos) {
 void Game::StartLevel(int level) {
 	CurrentLevel = level;
 	Levels[CurrentLevel].ResetLevel();
+	GameCamera.Center(Levels[CurrentLevel].CenterPoint);
 	Cannon->ResetAll();
 	State = GameState::ACTIVE;
 }

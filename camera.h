@@ -27,6 +27,8 @@ const GLfloat ZOOM = 45.0f;
 const GLfloat RightYaw = -155.0f;;
 const GLfloat LeftYaw = -25.0f;
 
+const GLfloat PanAmount = 10.0f;
+
 enum class PanState {
 	Center,
 	Left,
@@ -44,6 +46,7 @@ public:
 	glm::vec3 WorldUp;
 
 	GLfloat Radius, ZRadius;
+	GLfloat MinZ, MaxZ;
 
 	PanState CurrentPanState = PanState::Center;
 
@@ -65,6 +68,9 @@ public:
 	void Update(GLfloat dt);
 	void RotateRight(); // Refers to Yaw
 	void RotateLeft();
+	void PanIn();
+	void PanOut();
+	void Center(glm::vec3 position);
 
 private:
 	void updateCameraVectors();
