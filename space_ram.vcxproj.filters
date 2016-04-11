@@ -126,7 +126,7 @@
     <Text Include="levels\level_two.txt">
       <Filter>Resource Files\levels</Filter>
     </Text>
-    <Text Include="levels\Demo.txt">
+    <Text Include="levels\demo.txt">
       <Filter>Resource Files\levels</Filter>
     </Text>
   </ItemGroup>

@@ -32,6 +32,7 @@ public:
 	void Draw(glm::mat4 camera, LightSource *lightSource);
 	void Fire(GLuint amount, glm::vec3 origin, GLfloat launchRotation, glm::vec3 target);
 	bool CheckCollision(const GameObject &target);
+	void ResetAll();
 private:
 	std::vector<CannonBall> cannonBalls;
 	Renderer *cannonBallRenderer;

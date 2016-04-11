@@ -38,6 +38,13 @@ void GameLevel::Draw(glm::mat4 camera, LightSource *lightSource) {
 	}
 }
 
+void GameLevel::ResetLevel() {
+	for (auto &enemy : Enemies) {
+		enemy.IsAlive = true;
+	}
+	NumberKilled = 0;
+}
+
 Cube* GameLevel::CubeFromPosition(glm::vec2 position) {
 	int xCoord = (int)position.x;
 	int yCoord = (int)position.y*-1; // Adjust for -z going out from camera

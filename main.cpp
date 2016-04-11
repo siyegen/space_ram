@@ -62,7 +62,7 @@ int main() {
 	SpaceRam.Init();
 
 	// Start Game within Menu State
-	SpaceRam.State = GameState::ACTIVE;
+	SpaceRam.State = GameState::MENU;
 
 	// DeltaTime variables
 	GLfloat deltaTime = 0.0f;
@@ -120,7 +120,6 @@ void mousekey_callback(GLFWwindow* window, int button, int action, int mods) {
 		}
 		SpaceRam.MouseHeld = true;
 	} else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-		std::cout << "Released" << std::endl;
 		SpaceRam.MouseHeld = false;
 	}
 }

@@ -15,8 +15,6 @@ glm::vec2 TextRenderer::DrawText(std::string toRender, Text textFont, glm::vec2 
 	TextShader.SetVector2f("imgSize", textFont.Width, textFont.Height);
 	TextShader.SetVector2f("size", textFont.CellSize, textFont.CellSize);
 
-	
-
 	GLfloat i = 0;
 	GLfloat offset = textFont.EffectiveCharSize * (size / textFont.CellSize);// size / textFont.CharacterSize;
 	if (center) {

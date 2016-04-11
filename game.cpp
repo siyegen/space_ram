@@ -8,6 +8,7 @@ LightSource *lightSource;
 LightSource *cannonballLight;
 TextRenderer *textRenderer;
 Text *hudFont;
+GameLevel *demoLevel;
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -21,6 +22,7 @@ Game::~Game() {
 	delete Cannon;
 	delete textRenderer;
 	delete hudFont;
+	delete demoLevel;
 }
 
 void Game::Init() {
@@ -102,6 +104,7 @@ void Game::Init() {
 
 	GameLevel testLevel1("Simple and Easy", "levels/level_one.txt", 24, 30, cubeRenderer, outlineRenderer);
 	GameLevel testLevel2("More Targets", "levels/level_two.txt", 24, 30, cubeRenderer, outlineRenderer);
+	demoLevel = new GameLevel("Demo", "levels/demo.txt", 24, 30, cubeRenderer, outlineRenderer);
 	Levels.push_back(testLevel1);
 	Levels.push_back(testLevel2);
 	CurrentLevel = 1;
@@ -113,24 +116,28 @@ void Game::Init() {
 
 void Game::Update(GLfloat dt) {
 	GameLevel &level = Levels[CurrentLevel];
-	if (State != GameState::WIN && level.NumberKilled == level.Enemies.size()) {
-		// switch to rotating around screen on win
-		State = GameState::WIN;
-		return;
-	}
-	if (level.HasTarget) {
-		// find angle from turret to target, rotate towards
-		glm::vec2 target(level.Target.x, level.Target.y);
-		// adjust for origin position, move to render function
-		for (auto &turret : level.Turrets) {
-			glm::vec2 turretVec(turret.CubeObj.Position.x+0.5f, turret.CubeObj.Position.z - 0.5f);
-			glm::vec2 facing = turretVec - target;
-			GLfloat angle = glm::atan(facing.y, facing.x);
-			turret.CubeObj.Rotation = glm::degrees(-angle);
+	if (State == GameState::ACTIVE) {
+		if (level.NumberKilled == level.Enemies.size()) {
+			// switch to rotating around screen on win
+			State = GameState::WIN;
+			return;
 		}
+		if (level.HasTarget) {
+			// find angle from turret to target, rotate towards
+			glm::vec2 target(level.Target.x, level.Target.y);
+			// adjust for origin position, move to render function
+			for (auto &turret : level.Turrets) {
+				glm::vec2 turretVec(turret.CubeObj.Position.x + 0.5f, turret.CubeObj.Position.z - 0.5f);
+				glm::vec2 facing = turretVec - target;
+				GLfloat angle = glm::atan(facing.y, facing.x);
+				turret.CubeObj.Rotation = glm::degrees(-angle);
+			}
+		}
+		Cannon->Update(dt);
+		CheckHit();
+	} else if (State == GameState::MENU) {
+
 	}
-	Cannon->Update(dt);
-	CheckHit();
 }
 
 bool Game::CheckHit() {
@@ -151,14 +158,19 @@ bool Game::CheckHit() {
 }
 
 void Game::Render() {
-	if (State == GameState::ACTIVE) {
-		GLfloat levelPlace = Width / 4;
+	if (State == GameState::MENU) {
+		demoLevel->Draw(GameCamera.GetViewMatrix(), lightSource);
+		glm::vec2 offset = textRenderer->DrawText("SpaceRam", *hudFont, glm::vec2(Width, Height / 3), 256.0f, glm::vec4(1.0f, 0.21f, 0.21f, 1.0f), true);
+		textRenderer->DrawText("Press Space To Start", *hudFont, glm::vec2(Width, offset.y + 128.0f), 64.0f, glm::vec4(1.0f), true);
+	} else if (State == GameState::ACTIVE) {
 		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 		Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
 		glm::vec2 offset = textRenderer->DrawText("Current Level:", *hudFont, glm::vec2(5.0f, Height - 32.0f), 64.0f, glm::vec4(0.8f, 0.1f, 0.2f, 1.0f));
 		textRenderer->DrawText(Levels[CurrentLevel].LevelName, *hudFont, glm::vec2(offset.x, Height-32.0f), 64.0f, glm::vec4(1.0f));
 	} else if (State == GameState::WIN) {
+		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 		textRenderer->DrawText("You Win", *hudFont, glm::vec2(Width, Height / 2), 128.0f, glm::vec4(1.0f), true);
+		textRenderer->DrawText("Press Space To Go to the Menu", *hudFont, glm::vec2(Width, (Height / 2) + 128.0f), 32.0f, glm::vec4(1.0f), true);
 	}
 }
 
@@ -171,37 +183,51 @@ void Game::ProcessInput(GLfloat dt) {
 			GameCamera.RotateRight();
 			Keys[GLFW_KEY_E] = GL_FALSE;
 		}
+	} else if (State == GameState::MENU) {
+		if (Keys[GLFW_KEY_SPACE]) {
+			StartLevel(1);
+			Keys[GLFW_KEY_SPACE] = GL_FALSE;
+		}
+	} else if (State == GameState::WIN) {
+		if (Keys[GLFW_KEY_SPACE]) {
+			State = GameState::MENU;
+			Keys[GLFW_KEY_SPACE] = GL_FALSE;
+		}
 	}
 }
 
 void Game::HandleClick(GLuint button, double xPos, double yPos) {
-	if (button == GLFW_MOUSE_BUTTON_LEFT) {
-		GameLevel &level = Levels[CurrentLevel];
-		glm::vec3 world = screenToWorld(xPos, yPos);
-		// XXX: Check y, if it's greater than the highest level point
-		// then return as it's clicking on a bullet/ball
-		if (world.y >= 2.0f ) {
-			return;
-		}
-		glm::vec2 levelXY = glm::vec2(world.x, world.z);
-		Cube *cubeTarget = level.CubeFromPosition(levelXY);
-		if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
-			Cube turret = level.Turrets[FiringFrom++%level.Turrets.size()];
-			Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);
+	if (State == GameState::ACTIVE) {
+		if (button == GLFW_MOUSE_BUTTON_LEFT) {
+			GameLevel &level = Levels[CurrentLevel];
+			glm::vec3 world = screenToWorld(xPos, yPos);
+			// XXX: Check y, if it's greater than the highest level point
+			// then return as it's clicking on a bullet/ball
+			if (world.y >= 2.0f) {
+				return;
+			}
+			glm::vec2 levelXY = glm::vec2(world.x, world.z);
+			Cube *cubeTarget = level.CubeFromPosition(levelXY);
+			if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
+				Cube turret = level.Turrets[FiringFrom++%level.Turrets.size()];
+				Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);
+			}
 		}
 	}
 }
 
 void Game::MoveCursor(double xPos, double yPos) {
-	GameLevel &level = Levels[CurrentLevel];
-	glm::vec3 world = screenToWorld(xPos, yPos);
-	glm::vec2 levelXY = glm::vec2(world.x, world.z);
-	Cube *cubeTarget = level.CubeFromPosition(levelXY);
-	if (cubeTarget) {
-		level.Target = levelXY;
-		level.HasTarget = true;
-	} else {
-		level.HasTarget = false;
+	if (State == GameState::ACTIVE) {
+		GameLevel &level = Levels[CurrentLevel];
+		glm::vec3 world = screenToWorld(xPos, yPos);
+		glm::vec2 levelXY = glm::vec2(world.x, world.z);
+		Cube *cubeTarget = level.CubeFromPosition(levelXY);
+		if (cubeTarget) {
+			level.Target = levelXY;
+			level.HasTarget = true;
+		} else {
+			level.HasTarget = false;
+		}
 	}
 }
 
@@ -214,4 +240,11 @@ glm::vec3 Game::screenToWorld(double xPos, double yPos) {
 	GLfloat winZ;
 	glReadPixels((int)winX, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 	return glm::unProject(glm::vec3(winX, winY, winZ), modelView, projection, viewport);
+}
+
+void Game::StartLevel(int level) {
+	CurrentLevel = level;
+	Levels[CurrentLevel].ResetLevel();
+	Cannon->ResetAll();
+	State = GameState::ACTIVE;
 }

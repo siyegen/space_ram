@@ -87,6 +87,12 @@ bool CannonBallGenerator::CheckCollision(const GameObject &target) {
 	return false;
 }
 
+void CannonBallGenerator::ResetAll() {
+	for (auto &ball : cannonBalls) {
+		ball.IsActive = false;
+	}
+}
+
 GLuint CannonBallGenerator::getFirstReadyCannonBall() {
 	for (GLuint i = currentIndex; i < totalSize; i++) {
 		if (!cannonBalls[i].IsActive) {

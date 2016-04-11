@@ -71,6 +71,7 @@ public:
 	GameLevel(std::string name, const GLchar *file, GLuint width, GLuint height, Renderer *firstRenderer, Renderer *effectRenderer);
 
 	void Draw(glm::mat4 camera, LightSource *lightSource);
+	void ResetLevel();
 	// Takes float x/y position and finds the Cube that contains that
 	// Or nullptr if none.
 	// Other options: pass in out ref, or return Nonetype cube;

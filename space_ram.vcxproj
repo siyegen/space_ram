@@ -152,7 +152,7 @@
     <None Include="shaders\text.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="levels\Demo.txt" />
+    <Text Include="levels\demo.txt" />
     <Text Include="levels\level_two.txt" />
     <Text Include="levels\level_one.txt" />
     <Text Include="level_test.txt" />

@@ -58,6 +58,7 @@ public:
 	bool CheckHit();
 private:
 	glm::vec3 screenToWorld(double xPos, double yPos);
+	void StartLevel(int level);
 };
 
 #endif
