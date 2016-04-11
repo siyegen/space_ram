@@ -54,6 +54,9 @@
     <ClInclude Include="text_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sound_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="text_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sound_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -91,6 +91,7 @@ int main() {
 
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
+	SoundManager::Clear();
 	glfwTerminate();
 	return 0;
 }

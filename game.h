@@ -12,6 +12,7 @@
 
 #include "camera.h"
 #include "resource_manager.h"
+#include "sound_manager.h"
 #include "renderer.h"
 #include "game_object.h"
 #include "game_level.h"

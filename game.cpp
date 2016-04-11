@@ -11,7 +11,6 @@ LightSource *cannonballLight;
 TextRenderer *textRenderer;
 Text *hudFont;
 GameLevel *demoLevel;
-irrklang::ISoundEngine *SoundEngine = irrklang::createIrrKlangDevice();
 
 Game::Game(GLuint width, GLuint height)
 	: State(GameState::MENU), Keys(), Width(width), Height(height) {
@@ -26,8 +25,6 @@ Game::~Game() {
 	delete textRenderer;
 	delete hudFont;
 	delete demoLevel;
-
-	SoundEngine->drop();
 }
 
 void Game::Init() {
@@ -93,6 +90,12 @@ void Game::Init() {
 		glm::vec3((24 / 2) - 0.5f, 30.0f, -10.0f),
 		glm::vec3(1.0f, 0.2f, 0.0f),
 	};
+
+	SoundManager::LoadSound("menu_up", "audio/menu_up.wav");
+	SoundManager::LoadSound("menu_down", "audio/menu_down.wav");
+	SoundManager::LoadSound("menu_select", "audio/menu_select.wav");
+	SoundManager::LoadSound("cannon_fire", "audio/cannon_fire.wav");
+	SoundManager::LoadSound("explode", "audio/explode.wav");
 
 	Shader testCube = ResourceManager::LoadShader("testCube", "shaders/simple3d.vs", "shaders/diffuse_only.frag");
 	Shader outlineCube = ResourceManager::LoadShader("outlineCube", "shaders/outline.vs", "shaders/outline.frag", "shaders/outline.gs");
@@ -164,8 +167,7 @@ bool Game::CheckHit() {
 			if (Cannon->CheckCollision(enemy.CubeObj)) {
 				enemy.IsAlive = false;
 				level.NumberKilled++;
-				SoundEngine->setSoundVolume(0.3f);
-				SoundEngine->play2D("audio/explode.wav");
+				SoundManager::PlaySound("explode", 0.2f);
 				std::cout << "Boom, hit!" << std::endl;
 			}
 		}
@@ -215,18 +217,15 @@ void Game::ProcessInput(GLfloat dt) {
 	} else if (State == GameState::MENU) {
 		if (Keys[GLFW_KEY_W]) {
 			CurrentSelection = (CurrentSelection + 1) % LevelSelect.size();
-			SoundEngine->setSoundVolume(0.6f);
-			SoundEngine->play2D("audio/menu_up.wav");
+			SoundManager::PlaySound("menu_up", 0.6f);
 			Keys[GLFW_KEY_W] = GL_FALSE;
 		} else if (Keys[GLFW_KEY_S]) {
 			CurrentSelection = (CurrentSelection - 1) % LevelSelect.size();
-			SoundEngine->setSoundVolume(0.6f);
-			SoundEngine->play2D("audio/menu_down.wav");
+			SoundManager::PlaySound("menu_down", 0.6f);
 			Keys[GLFW_KEY_S] = GL_FALSE;
 		}
 		if (Keys[GLFW_KEY_SPACE]) {
-			SoundEngine->setSoundVolume(1.0f);
-			SoundEngine->play2D("audio/menu_select.wav");
+			SoundManager::PlaySound("menu_select", 0.6f);
 			StartLevel(CurrentSelection);
 			Keys[GLFW_KEY_SPACE] = GL_FALSE;
 		}
@@ -252,8 +251,7 @@ void Game::HandleClick(GLuint button, double xPos, double yPos) {
 			Cube *cubeTarget = level.CubeFromPosition(levelXY);
 			if (cubeTarget && (cubeTarget->State != CubeState::Turret || cubeTarget->State != CubeState::Enemy)) {
 				Cube turret = level.Turrets[FiringFrom++%level.Turrets.size()];
-				SoundEngine->setSoundVolume(0.2f);
-				SoundEngine->play2D("audio/cannon_fire.wav");
+				SoundManager::PlaySound("cannon_fire", 0.1f);
 				Cannon->Fire(1, turret.CubeObj.Position, turret.CubeObj.Rotation, world);
 			}
 		}
