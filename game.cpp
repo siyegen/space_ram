@@ -134,7 +134,7 @@ void Game::Update(GLfloat dt) {
 		if (level.NumberKilled == level.Enemies.size()) {
 			// switch to rotating around screen on win
 			State = GameState::WIN;
-			GameCamera.Center(Levels[CurrentLevel].CenterPoint);
+			GameCamera.Center(demoLevel->CenterPoint);
 			LevelSelect[CurrentLevel].Beaten = true;
 			return;
 		}
@@ -153,7 +153,7 @@ void Game::Update(GLfloat dt) {
 		CheckHit();
 	} else if (State == GameState::MENU) {
 		LevelSelectHud &hud = LevelSelect[CurrentSelection];
-		GameCamera.Center(Levels[CurrentLevel].CenterPoint);
+		GameCamera.Center(demoLevel->CenterPoint);
 		SelectCursor = hud.Position;
 	} else if (State == GameState::WIN) {
 		GameCamera.Position.x = (sin(glfwGetTime()) * level.CenterPoint.x) + level.CenterPoint.x /2;
