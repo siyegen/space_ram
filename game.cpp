@@ -163,10 +163,13 @@ void Game::Render() {
 		glm::vec2 offset = textRenderer->DrawText("SpaceRam", *hudFont, glm::vec2(Width, Height / 3), 256.0f, glm::vec4(1.0f, 0.21f, 0.21f, 1.0f), true);
 		textRenderer->DrawText("Press Space To Start", *hudFont, glm::vec2(Width, offset.y + 128.0f), 64.0f, glm::vec4(1.0f), true);
 	} else if (State == GameState::ACTIVE) {
-		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
+		GameLevel &level = Levels[CurrentLevel];
+		level.Draw(GameCamera.GetViewMatrix(), lightSource);
 		Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
 		glm::vec2 offset = textRenderer->DrawText("Current Level:", *hudFont, glm::vec2(5.0f, Height - 32.0f), 64.0f, glm::vec4(0.8f, 0.1f, 0.2f, 1.0f));
-		textRenderer->DrawText(Levels[CurrentLevel].LevelName, *hudFont, glm::vec2(offset.x, Height-32.0f), 64.0f, glm::vec4(1.0f));
+		textRenderer->DrawText(level.LevelName, *hudFont, glm::vec2(offset.x, Height-32.0f), 64.0f, glm::vec4(1.0f));
+		offset = textRenderer->DrawText("Enemies left", *hudFont, glm::vec2(5.0f, 5.0f), 48.0f, glm::vec4(1.0f));
+		textRenderer->DrawText(std::to_string(level.Enemies.size() - level.NumberKilled), *hudFont, glm::vec2(offset.x+10.0f, 5.0f), 48.0f, glm::vec4(1.0, 0.21f, 0.1f, 1.0f));
 	} else if (State == GameState::WIN) {
 		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
 		textRenderer->DrawText("You Win", *hudFont, glm::vec2(Width, Height / 2), 128.0f, glm::vec4(1.0f), true);
