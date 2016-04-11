@@ -1,7 +1,8 @@
 #include "text.h"
 
-Text::Text(std::string fontImg, GLfloat characterSize, int startCharacter) {
-	CharacterSize = characterSize;
+Text::Text(std::string fontImg, GLfloat characterSize, GLfloat effectiveCharSize, int startCharacter) {
+	CellSize = characterSize;
+	EffectiveCharSize = effectiveCharSize;
 	StartCharacter = startCharacter;
 
 	glBindTexture(GL_TEXTURE_2D, ID);
@@ -40,6 +41,6 @@ Text::Text(std::string fontImg, GLfloat characterSize, int startCharacter) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	Cols = Width / CharacterSize;
-	Rows = Height / CharacterSize;
+	Cols = Width / CellSize;
+	Rows = Height / CellSize;
 }

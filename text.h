@@ -16,10 +16,11 @@ public:
 
 	int Width, Height;
 	int StartCharacter;
-	GLfloat CharacterSize;
+	GLfloat CellSize;
+	GLfloat EffectiveCharSize;
 	int Rows, Cols;
 
-	Text(std::string fontImg, GLfloat characterSize, int s);
+	Text(std::string fontImg, GLfloat characterSize, GLfloat effectiveCharSize, int startCharacter);
 };
 
 #endif

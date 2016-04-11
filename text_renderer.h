@@ -19,10 +19,8 @@ public:
 
 	TextRenderer(glm::mat4 projection, Shader textShader);
 
-	void Draw(glm::mat4 projection, glm::mat4 view);
-	void DrawWord(std::string text, glm::mat4 projection, glm::mat4 view);
-
-	void DrawText(std::string toRender, Text text, glm::vec2 position, GLfloat size, glm::vec4 color);
+	// Returns last position drawn at
+	glm::vec2 DrawText(std::string toRender, Text text, glm::vec2 position, GLfloat size, glm::vec4 color, bool center=false);
 };
 
 #endif

@@ -82,7 +82,6 @@ void Game::Init() {
 		glm::vec3((24 / 2) - 0.5f, 10.0f, -15.0f),
 		glm::vec3(0.8f, 0.5f, 1.0f),
 	};
-	// Need to adjust for level
 	cannonballLight = new LightSource{
 		glm::vec3((24 / 2) - 0.5f, 30.0f, -10.0f),
 		glm::vec3(1.0f, 0.2f, 0.0f),
@@ -96,7 +95,7 @@ void Game::Init() {
 	outlineRenderer = new Renderer(outlineCube, vertices);
 	textRenderer = new TextRenderer(HUD, textShader);
 
-	hudFont = new Text("imgs/minecraft_font.bmp", 32.0f, 32);
+	hudFont = new Text("imgs/minecraft_font.bmp", 32.0f, 16.0f, 32);
 
 	testCube.Use().SetMatrix4("projection", projection);
 	outlineCube.Use().SetMatrix4("projection", projection);
@@ -114,9 +113,9 @@ void Game::Init() {
 
 void Game::Update(GLfloat dt) {
 	GameLevel &level = Levels[CurrentLevel];
-	if (level.NumberKilled == level.Enemies.size()) {
-		std::cout << "You win!" << std::endl;
+	if (State != GameState::WIN && level.NumberKilled == level.Enemies.size()) {
 		// switch to rotating around screen on win
+		State = GameState::WIN;
 		return;
 	}
 	if (level.HasTarget) {
@@ -152,14 +151,15 @@ bool Game::CheckHit() {
 }
 
 void Game::Render() {
-	Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
-	Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
-	glDepthMask(GL_FALSE);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	textRenderer->DrawText("Look At", *hudFont, glm::vec2(600.0f, 100.0f), 128.0f, glm::vec4(1.0f));
-	textRenderer->DrawText("My Text", *hudFont, glm::vec2(600.0f, 164.0f), 128.0f, glm::vec4(1.0f, 0.5f, 0.5, 1.0f));
-	textRenderer->DrawText("Woo", *hudFont, glm::vec2(600.0f, 228.0f), 128.0f, glm::vec4(0.5f, 0.7, 0.3f, 1.0f));
-	glDepthMask(GL_TRUE);
+	if (State == GameState::ACTIVE) {
+		GLfloat levelPlace = Width / 4;
+		Levels[CurrentLevel].Draw(GameCamera.GetViewMatrix(), lightSource);
+		Cannon->Draw(GameCamera.GetViewMatrix(), cannonballLight);
+		glm::vec2 offset = textRenderer->DrawText("Current Level:", *hudFont, glm::vec2(5.0f, Height - 32.0f), 64.0f, glm::vec4(0.8f, 0.1f, 0.2f, 1.0f));
+		textRenderer->DrawText(Levels[CurrentLevel].LevelName, *hudFont, glm::vec2(offset.x, Height-32.0f), 64.0f, glm::vec4(1.0f));
+	} else if (State == GameState::WIN) {
+		textRenderer->DrawText("You Win", *hudFont, glm::vec2(Width, Height / 2), 128.0f, glm::vec4(1.0f), true);
+	}
 }
 
 void Game::ProcessInput(GLfloat dt) {
