@@ -3,6 +3,9 @@ SpaceRam
 
 Ramparts inspired game, in SPACE(Sort of)!
 
+Don't want to build and just want to play?!? Check the releases!
+*[0.1.0](https://github.com/siyegen/space_ram/releases/tag/0.1.0)* | https://github.com/siyegen/space_ram/releases/tag/0.1.0
+
 ### How to Play
 - Use S and W to go up/down and space to select
 - Move the cursor with the mouse to aim at the 'evil' blocks and left click to destroy them
