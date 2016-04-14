@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>Y:\dev\code\space_ram\includes;$(IncludePath)</IncludePath>
+    <IncludePath>includes;$(IncludePath)</IncludePath>
     <LibraryPath>Y:\dev\code\space_ram\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
