@@ -91,7 +91,7 @@ int main() {
 
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 	SoundManager::Clear();
 #endif
 	glfwTerminate();

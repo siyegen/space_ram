@@ -1,11 +1,11 @@
 #include "sound_manager.h"
 
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 irrklang::ISoundEngine *SoundEngine = irrklang::createIrrKlangDevice();
 #endif
 
 void SoundManager::LoadSound(std::string name, std::string file) {
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 	irrklang::ISoundSource *sound = SoundEngine->addSoundSourceFromFile(file.c_str());
 	if (sound) {
 		SoundEngine->addSoundSourceAlias(sound, name.c_str());
@@ -14,7 +14,7 @@ void SoundManager::LoadSound(std::string name, std::string file) {
 }
 
 void SoundManager::PlaySound(std::string name, float volume) {
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 	irrklang::ISoundSource *sound = SoundEngine->getSoundSource(name.c_str());
 	if (sound) {
 		sound->setDefaultVolume(volume);
@@ -24,7 +24,7 @@ void SoundManager::PlaySound(std::string name, float volume) {
 }
 
 void SoundManager::Clear() {
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 	SoundEngine->removeAllSoundSources();
 	SoundEngine->drop();
 #endif
