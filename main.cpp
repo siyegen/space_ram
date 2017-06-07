@@ -68,6 +68,7 @@ int main() {
 	GLfloat deltaTime = 0.0f;
 	GLfloat lastFrame = 0.0f;
 
+	// Main loop here
 	while (!glfwWindowShouldClose(window)) {
 		// Calculate delta time
 		GLfloat currentFrame = glfwGetTime();
@@ -75,13 +76,13 @@ int main() {
 		lastFrame = currentFrame;
 		glfwPollEvents();
 
-		// Manage user input
+		// Manage user input, this should swap scene/states as needed
 		SpaceRam.ProcessInput(deltaTime);
 
-		// Update Game state
+		// Update Game state/scene
 		SpaceRam.Update(deltaTime);
 
-		// Render
+		// Render, this should be calling the renederer from the scene manager
 		glClearColor(BG_COLOR.x, BG_COLOR.y, BG_COLOR.z, BG_COLOR.w);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		SpaceRam.Render();
@@ -91,9 +92,6 @@ int main() {
 
 	// Delete all resources as loaded using the resource manager
 	ResourceManager::Clear();
-#ifdef _WIN32
-	SoundManager::Clear();
-#endif
 	glfwTerminate();
 	return 0;
 }
