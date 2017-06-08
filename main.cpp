@@ -51,6 +51,7 @@ int main() {
 
 	// OpenGL configuration
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glfwSwapInterval(0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
